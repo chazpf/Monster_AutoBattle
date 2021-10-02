@@ -14,10 +14,10 @@ const monstersCROneFourth = [
 
 const monstersCROneHalf = [
   'black-bear',
-  'cocktrice',
+  'cockatrice',
   'crocodile',
   'giant-wasp',
-  'grey-ooze',
+  'gray-ooze',
   'hobgoblin',
   'magmin',
   'rust-monster',
@@ -28,43 +28,45 @@ const monstersCROneHalf = [
 const monstersCR1 = [
   'animated-armor',
   'brass-dragon-wyrmling',
+  'bugbear',
   'death-dog',
   'dire-wolf',
   'ghoul',
   'giant-toad',
   'giant-vulture',
-  'hobgoblin',
   'imp',
   'tiger'
 ]
 
 class MonsterImgs {
-  constructor(arr, cr) {
+  constructor(arr, fileCR) {
     for (const monster of arr) {
-      this[monster] = `monsters/CR_${cr}/${monster}.jpeg`
+      this[monster] = `monsters/CR_${fileCR}/${monster}.jpeg`
     }
   }
 }
 
 const monsterImgsOneFourth = new MonsterImgs(monstersCROneFourth, '1-4');
 const monsterImgsOneHalf = new MonsterImgs(monstersCROneHalf, '1-2');
+console.log(monsterImgsOneHalf);
 const monsterImgs1 = new MonsterImgs(monstersCR1, '1');
 
 $(() => {
-  for (const monster in monsterImgs1) {
-    const $img = $('<img>').attr('src', monsterImgs1[monster]);
+  for (const monster in monsterImgsOneFourth) {
+    const $img = $('<img>').attr('src', monsterImgsOneFourth[monster]);
     $img.css('width', '20vw');
     $('body').append($img)
   }
 })
 
-$.ajax({
-  url: 'https://api.open5e.com/monsters/?document__slug=wotc-srd&challenge_rating=1/4',
-  type: "GET"
-}).then(data => {
-  // console.log(data);
-  const dataTrimmed = data.results.filter(monster => monstersCROneFourth.includes(monster.slug))
-  console.log(dataTrimmed);
-}, () => {
-  console.log('Bad request');
-})
+const callAPI = (arr, cr) => {
+  $.ajax({
+    url: `https://api.open5e.com/monsters/?document__slug=wotc-srd&challenge_rating=${cr}`,
+    type: "GET"
+  }).then(data => {
+    const dataTrimmed = data.results.filter(monster => arr.includes(monster.slug))
+    console.log(dataTrimmed);
+  }, () => {
+    console.log('Bad request');
+  })
+}
