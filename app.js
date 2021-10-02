@@ -58,11 +58,13 @@ $(() => {
   }
 })
 
-// $.ajax({
-//   url: 'https://api.open5e.com/monsters/?document__slug=wotc-srd&challenge_rating=10',
-//   type: "GET"
-// }).then(data => {
-//   console.log(data);
-// }, () => {
-//   console.log('Bad request');
-// })
+$.ajax({
+  url: 'https://api.open5e.com/monsters/?document__slug=wotc-srd&challenge_rating=1/4',
+  type: "GET"
+}).then(data => {
+  // console.log(data);
+  const dataTrimmed = data.results.filter(monster => monstersCROneFourth.includes(monster.slug))
+  console.log(dataTrimmed);
+}, () => {
+  console.log('Bad request');
+})
