@@ -37,18 +37,22 @@ const monstersCR1 = [
   'tiger'
 ];
 
-class MonsterImgs {
-  constructor(arr, fileCR) {
-    for (const monster of arr) {
-      this[monster] = `monsters/CR_${fileCR}/${monster}.jpeg`
-    }
-  }
-}
+// class MonsterImgs {
+//   constructor(arr, fileCR) {
+//     for (const monster of arr) {
+//       this[monster] = `monsters/CR_${fileCR}/${monster}.jpeg`
+//     }
+//   }
+// }
 
 class MonsterGroup {
   constructor(monstersArr, fileCR, urlCR) {
     this.monsterNames = monstersArr;
-    this.monsterImgs = new MonsterImgs(monstersArr, fileCR);
+    this.monsterImgs = [];
+    for (const monster of monstersArr) {
+      const filepath = `monsters/CR_${fileCR}/${monster}.jpeg`;
+      this.monsterImgs.push(filepath);
+    }
     this.fileCR = fileCR;
     this.urlCR = urlCR || fileCR;
     $.ajax({
@@ -63,7 +67,7 @@ class MonsterGroup {
   }
   generateCarousel() {
     $('.carousel').remove();
-    buildCarousel(this.monsterImgs, this.monsterData);
+    buildCarousel(this.monsterNames, this.monsterImgs, this.monsterData);
   }
 };
 
@@ -97,7 +101,7 @@ class Monster {
   }
 }
 
-const buildCarousel = (imgObj, data) => {
+const buildCarousel = (namesArr, imgArr, data) => {
   const $carousel = $('<div>').addClass('carousel');
 
   const $buttonsContainer = $('<div>').attr('id', 'carousel-button-container');
@@ -109,36 +113,37 @@ const buildCarousel = (imgObj, data) => {
   $carousel.append($buttonsContainer);
   $('body').append($carousel);
 
-  for (const monster in imgObj) {
-    const monsterData = data.find(m => m.slug === monster);
-    const $monsterContainer = buildMonsterContainer(imgObj[monster], monsterData)
+  for (const monster of namesArr) {
+    const index = namesArr.indexOf(monster);
+    const monsterData = data[index];
+    const $monsterContainer = buildMonsterContainer(imgArr[index], monsterData)
     $monsterContainer.insertBefore($buttonsContainer);
   }
 
   $('.carousel-monster-container').eq(0).toggleClass('hide');
 
-  let currentIndex = 0;
+  let carouselIndex = 0;
   let numOfContainers = $('.carousel-monster-container').length - 1;
   const changeCarousel = direction => {
-    $('.carousel-monster-container').eq(currentIndex).toggleClass('hide');
+    $('.carousel-monster-container').eq(carouselIndex).toggleClass('hide');
     if (direction === 'next') {
-      if (currentIndex < numOfContainers) {
-        currentIndex++;
+      if (carouselIndex < numOfContainers) {
+        carouselIndex++;
       } else {
-        currentIndex = 0;
+        carouselIndex = 0;
       }
     } else if (direction === 'prev') {
-      if (currentIndex > 0) {
-        currentIndex--;
+      if (carouselIndex > 0) {
+        carouselIndex--;
       } else {
-        currentIndex = numOfContainers;
+        carouselIndex = numOfContainers;
       }
     }
-    $('.carousel-monster-container').eq(currentIndex).toggleClass('hide')
+    $('.carousel-monster-container').eq(carouselIndex).toggleClass('hide')
   }
 
   const select = () => {
-    const testMonster = new Monster(firstMonsters.monsterImgs[firstMonsters.monsterNames[currentIndex]], firstMonsters.monsterData[currentIndex])
+    const testMonster = new Monster(firstMonsters.monsterImgs[carouselIndex], firstMonsters.monsterData[carouselIndex])
     console.log(testMonster);
   }
 
