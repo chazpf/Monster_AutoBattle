@@ -74,6 +74,7 @@ class Monster {
     this.img = img;
     this.name = data.name;
     this.hp = data.hit_points;
+    this.currentHp = this.hp;
     this.ac = data.armor_class;
     let attackIndex;
     if (data.actions[0].name === "Multiattack") {
@@ -143,8 +144,10 @@ const buildCarousel = (namesArr, imgArr, data) => {
   }
 
   const select = () => {
-    const playersMonster = new Monster(currentGroup.monsterImgs[carouselIndex], currentGroup.monsterData[carouselIndex]);
-    buildBattle(playersMonster);
+    const playerMonster = new Monster(currentGroup.monsterImgs[carouselIndex], currentGroup.monsterData[carouselIndex]);
+    $('.carousel').remove();
+    $('.rules-description').remove();
+    buildBattle(playerMonster);
   }
 
   $('#next').on('click', () => {
@@ -174,18 +177,45 @@ const buildMonsterContainer = (monster) => {
 }
 
 const buildBattle = (monster) => {
-  const playersMonster = monster;
-  // randomly select a diffect monster from the group
+  const playerMonster = monster;
+
   let randomIndex = currentGroup.randomIndex();
   while (randomIndex === monster.index) {
     randomIndex = currentGroup.randomIndex();
   }
-  const enemyMonster = new Monster(currentGroup.monsterImgs[randomIndex], currentGroup.monsterData[randomIndex])
-  console.log(playersMonster, enemyMonster);
-  // build the html to layout the battle page.
+  const enemyMonster = new Monster(currentGroup.monsterImgs[randomIndex], currentGroup.monsterData[randomIndex]);
+  console.log(playerMonster, enemyMonster);
 
-  // instantiate objects for player's monster and enemy monster
+  // build the html to layout the battle page.
+  const $battle = $('<div>').addClass('battle');
+  const $playerMonster = $('<div>').addClass('monster').attr('id', 'player-monster');
+  const $playerImg = $('<img>').addClass('img').attr('src', `${playerMonster.img}`);
+  const $playerDescription = $('<div>').addClass('description');
+  const $playerName = $('<p>').html(`<strong>${playerMonster.name}</strong>`);
+  const $playerHp = $('<p>').html(`<strong>HP: </strong>${playerMonster.hp}`);
+  const $playerAc = $('<p>').html(`<strong>AC: </strong>${playerMonster.ac}`);
+  const $playerAttack = $('<p>').html(playerMonster.attackString);
+
+  const $battleLog = $('<div>').attr('id', 'battle-log');
+
+  const $enemyMonster = $('<div>').addClass('monster').attr('id', 'enemy-monster');
+  const $enemyImg = $('<img>').addClass('img').attr('src', `${enemyMonster.img}`);
+  const $enemyDescription = $('<div>').addClass('description');
+  const $enemyName = $('<p>').html(`<strong>${enemyMonster.name}</strong>`);
+  const $enemyHp = $('<p>').html(`<strong>HP: </strong>${enemyMonster.hp}`);
+  const $enemyAc = $('<p>').html(`<strong>AC: </strong>${enemyMonster.ac}`);
+  const $enemyAttack = $('<p>').html(enemyMonster.attackString);
+
+  $playerDescription.append($playerName).append($playerHp).append($playerAc).append($playerAttack);
+  $enemyDescription.append($enemyName).append($enemyHp).append($enemyAc).append($enemyAttack);
+  $playerMonster.append($playerImg).append($playerDescription);
+  $enemyMonster.append($enemyImg).append($enemyDescription);
+  $battle.append($playerMonster).append($battleLog).append($enemyMonster);
+
+  $('body').append($battle);
   // run the battle
+  // runBattle(playerMonster, enemyMonster);
+
   // when battle is over, display resolution screen, which will show battle summary and have button to either restart or move onto next leve/carousel
 };
 
