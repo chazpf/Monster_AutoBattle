@@ -37,14 +37,6 @@ const monstersCR1 = [
   'tiger'
 ];
 
-// class MonsterImgs {
-//   constructor(arr, fileCR) {
-//     for (const monster of arr) {
-//       this[monster] = `monsters/CR_${fileCR}/${monster}.jpeg`
-//     }
-//   }
-// }
-
 class MonsterGroup {
   constructor(monstersArr, fileCR, urlCR) {
     this.monsterNames = monstersArr;
@@ -92,11 +84,11 @@ class Monster {
       this.damageDice = data.actions[attackIndex].damage_dice;
     }
     if (this.damageBonus && this.damageDice) {
-      this.attackStr = `<strong>Attack: </strong>${this.attackName}, +${this.attackBonus} to hit, ${this.damageDice}+${this.damageBonus} dmg`;
+      this.attackString = `<strong>Attack: </strong>${this.attackName}, +${this.attackBonus} to hit, ${this.damageDice}+${this.damageBonus} dmg`;
     } else if (this.damageDice) {
-      this.attackStr = `<strong>Attack: </strong>${this.attackName}, +${this.attackBonus} to hit, ${this.damageDice} dmg`;
+      this.attackString = `<strong>Attack: </strong>${this.attackName}, +${this.attackBonus} to hit, ${this.damageDice} dmg`;
     } else if (this.damageBonus) {
-      this.attackStr = `<strong>Attack: </strong>${this.attackName}, +${this.attackBonus} to hit, ${this.damageBonus} dmg`;
+      this.attackString = `<strong>Attack: </strong>${this.attackName}, +${this.attackBonus} to hit, ${this.damageBonus} dmg`;
     }
   }
 }
@@ -113,10 +105,12 @@ const buildCarousel = (namesArr, imgArr, data) => {
   $carousel.append($buttonsContainer);
   $('body').append($carousel);
 
-  for (const monster of namesArr) {
-    const index = namesArr.indexOf(monster);
+  for (const monsterName of namesArr) {
+    const index = namesArr.indexOf(monsterName);
+    const monsterImg = imgArr[index];
     const monsterData = data[index];
-    const $monsterContainer = buildMonsterContainer(imgArr[index], monsterData)
+    const monster = new Monster(monsterImg, monsterData)
+    const $monsterContainer = buildMonsterContainer(monster)
     $monsterContainer.insertBefore($buttonsContainer);
   }
 
@@ -157,27 +151,15 @@ const buildCarousel = (namesArr, imgArr, data) => {
   $('#select').on('click', select);
 };
 
-const buildMonsterContainer = (img, data) => {
+const buildMonsterContainer = (monster) => {
   const $monsterContainer = $('<div>').addClass('carousel-monster-container').addClass('hide');
   const $imgContainer = $('<div>').addClass('carousel-img-container');
-  const $img = $('<img>').addClass('carousel-img').attr('src', img);
+  const $img = $('<img>').addClass('carousel-img').attr('src', monster.img);
   const $monsterStats = $('<div>').addClass('carousel-monster-stats');
-  const $name = $('<p>').html(`<strong>${data.name}</strong>`);
-  const $hp = $('<p>').html(`<strong>HP: </strong>${data.hit_points}`);
-  const $ac = $('<p>').html(`<strong>AC: </strong>${data.armor_class}`);
-  let attackIndex;
-  if (data.actions[0].name === "Multiattack") {
-    attackIndex = 1;
-  } else {
-    attackIndex = 0;
-  }
-  let damage_bonus;
-  if (data.actions[attackIndex].damage_bonus) {
-    damage_bonus = data.actions[attackIndex].damage_bonus;
-  } else {
-    damage_bonus = 0;
-  }
-  const $attack = $('<p>').html(`<strong>Attack: </strong>${data.actions[attackIndex].name}, +${data.actions[attackIndex].attack_bonus} to hit, ${data.actions[attackIndex].damage_dice}+${damage_bonus} dmg`);
+  const $name = $('<p>').html(`<strong>${monster.name}</strong>`);
+  const $hp = $('<p>').html(`<strong>HP: </strong>${monster.hp}`);
+  const $ac = $('<p>').html(`<strong>AC: </strong>${monster.ac}`);
+  const $attack = $('<p>').html(monster.attackString);
 
   $imgContainer.append($img)
   $monsterStats.append($name).append($hp).append($ac).append($attack);
