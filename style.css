@@ -22,8 +22,15 @@ h1 {
   margin-bottom: 2em;
 }
 
+#start-container {
+  display: flex;
+  justify-content: center;
+}
+
 .carousel {
   height: 40vh;
+  max-width: 937px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -34,12 +41,21 @@ h1 {
   height: 80%;
   width: 80%;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
 }
 
-.carousel-img {
+.carousel-img-container{
   height: 95%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60%;
+}
+
+.carousel-img {
+  height: 100%;
+  box-shadow: 0 0 8px 8px #310 inset;
   /* width: 60%; */
 }
 

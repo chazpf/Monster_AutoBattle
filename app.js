@@ -1,4 +1,3 @@
-
 const monstersCROneFourth = [
   'blink-dog',
   'constrictor-snake',
@@ -46,23 +45,27 @@ class MonsterImgs {
   }
 }
 
-const monsterImgsOneFourth = new MonsterImgs(monstersCROneFourth, '1-4');
-const monsterImgsOneHalf = new MonsterImgs(monstersCROneHalf, '1-2');
-const monsterImgs1 = new MonsterImgs(monstersCR1, '1');
-
-const callAPI = (monsterArr, imgObj, urlCR) => {
-  $.ajax({
-    url: `https://api.open5e.com/monsters/?document__slug=wotc-srd&challenge_rating=${urlCR}`,
-    type: "GET"
-  }).then(data => {
-    const dataTrimmed = data.results.filter(monster => monsterArr.includes(monster.slug))
-    console.log(dataTrimmed);
-    buildCarousel(imgObj, dataTrimmed)
-  }, () => {
-    console.log('Bad request');
-  })
+class MonsterGroup {
+  constructor(monstersArr, fileCR, urlCR) {
+    this.monsterNames = monstersArr;
+    this.monsterImgs = new MonsterImgs(monstersArr, fileCR);
+    this.fileCR = fileCR;
+    this.urlCR = urlCR || fileCR;
+    $.ajax({
+      url: `https://api.open5e.com/monsters/?document__slug=wotc-srd&challenge_rating=${this.urlCR}`,
+      type: "GET"
+    }).then(data => {
+      const dataTrimmed = data.results.filter(monster => this.monsterNames.includes(monster.slug))
+      this.monsterData = dataTrimmed;
+    }, () => {
+      console.log('Bad request');
+    })
+  }
+  generateCarousel() {
+    $('.carousel').remove();
+    buildCarousel(this.monsterImgs, this.monsterData);
+  }
 }
-
 
 const buildCarousel = (imgObj, data) => {
   const $carousel = $('<div>').addClass('carousel');
@@ -110,12 +113,11 @@ const buildCarousel = (imgObj, data) => {
   $('#prev').on('click', () => {
     changeCarousel('prev');
   });
-
-
 }
 
 const buildMonsterContainer = (img, data) => {
   const $monsterContainer = $('<div>').addClass('carousel-monster-container').addClass('hide');
+  const $imgContainer = $('<div>').addClass('carousel-img-container');
   const $img = $('<img>').addClass('carousel-img').attr('src', img);
   const $monsterStats = $('<div>').addClass('carousel-monster-stats');
   const $name = $('<p>').html(`<strong>${data.name}</strong>`);
@@ -135,11 +137,23 @@ const buildMonsterContainer = (img, data) => {
   }
   const $attack = $('<p>').html(`<strong>Attack: </strong>${data.actions[attackIndex].name}, +${data.actions[attackIndex].attack_bonus} to hit, ${data.actions[attackIndex].damage_dice}+${damage_bonus} dmg`);
 
+  $imgContainer.append($img)
   $monsterStats.append($name).append($hp).append($ac).append($attack);
-  $monsterContainer.append($img).append($monsterStats);
+  $monsterContainer.append($imgContainer).append($monsterStats);
   return $monsterContainer;
 }
 
+const firstMonsters = new MonsterGroup(monstersCROneFourth, '1-4', '1/4');
+const secondMonsters = new MonsterGroup(monstersCROneHalf, '1-2', '1/2');
+const thirdMonsters = new MonsterGroup(monstersCR1, '1')
+
 $(() => {
-  callAPI(monstersCR1, monsterImgs1, '1');
+  $('#start-button').on('click', event => {
+    if (firstMonsters.monsterData) {
+      $('#start-container').remove();
+      firstMonsters.generateCarousel();
+    } else {
+      console.log('too fast!');
+    }
+  })
 })
