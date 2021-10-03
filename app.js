@@ -9,7 +9,7 @@ const monstersCROneFourth = [
   'sprite',
   'violet-fungus',
   'zombie'
-]
+];
 
 const monstersCROneHalf = [
   'black-bear',
@@ -22,7 +22,7 @@ const monstersCROneHalf = [
   'rust-monster',
   'shadow',
   'worg'
-]
+];
 
 const monstersCR1 = [
   'animated-armor',
@@ -35,7 +35,7 @@ const monstersCR1 = [
   'giant-vulture',
   'imp',
   'tiger'
-]
+];
 
 class MonsterImgs {
   constructor(arr, fileCR) {
@@ -64,6 +64,36 @@ class MonsterGroup {
   generateCarousel() {
     $('.carousel').remove();
     buildCarousel(this.monsterImgs, this.monsterData);
+  }
+};
+
+class Monster {
+  constructor(img, data) {
+    this.img = img;
+    this.name = data.name;
+    this.hp = data.hit_points;
+    this.ac = data.armor_class;
+    let attackIndex;
+    if (data.actions[0].name === "Multiattack") {
+      attackIndex = 1;
+    } else {
+      attackIndex = 0;
+    }
+    this.attackName = data.actions[attackIndex].name;
+    this.attackBonus = data.actions[attackIndex].attack_bonus || 0;
+    if (data.actions[attackIndex].damage_bonus) {
+      this.damageBonus = data.actions[attackIndex].damage_bonus;
+    }
+    if (data.actions[attackIndex].damage_dice) {
+      this.damageDice = data.actions[attackIndex].damage_dice;
+    }
+    if (this.damageBonus && this.damageDice) {
+      this.attackStr = `<strong>Attack: </strong>${this.attackName}, +${this.attackBonus} to hit, ${this.damageDice}+${this.damageBonus} dmg`;
+    } else if (this.damageDice) {
+      this.attackStr = `<strong>Attack: </strong>${this.attackName}, +${this.attackBonus} to hit, ${this.damageDice} dmg`;
+    } else if (this.damageBonus) {
+      this.attackStr = `<strong>Attack: </strong>${this.attackName}, +${this.attackBonus} to hit, ${this.damageBonus} dmg`;
+    }
   }
 }
 
@@ -107,13 +137,20 @@ const buildCarousel = (imgObj, data) => {
     $('.carousel-monster-container').eq(currentIndex).toggleClass('hide')
   }
 
+  const select = () => {
+    const testMonster = new Monster(firstMonsters.monsterImgs[firstMonsters.monsterNames[currentIndex]], firstMonsters.monsterData[currentIndex])
+    console.log(testMonster);
+  }
+
   $('#next').on('click', () => {
     changeCarousel('next');
   });
   $('#prev').on('click', () => {
     changeCarousel('prev');
   });
-}
+
+  $('#select').on('click', select);
+};
 
 const buildMonsterContainer = (img, data) => {
   const $monsterContainer = $('<div>').addClass('carousel-monster-container').addClass('hide');
@@ -143,9 +180,18 @@ const buildMonsterContainer = (img, data) => {
   return $monsterContainer;
 }
 
+const buildBattle = () => {
+  // build the html to layout the battle page.
+  // receive the data for the player's monster
+  // randomly select a diffect monster from the group
+  // instantiate objects for player's monster and enemy monster
+  // run the battle
+  // when battle is over, display resolution screen, which will show battle summary and have button to either restart or move onto next leve/carousel
+};
+
 const firstMonsters = new MonsterGroup(monstersCROneFourth, '1-4', '1/4');
 const secondMonsters = new MonsterGroup(monstersCROneHalf, '1-2', '1/2');
-const thirdMonsters = new MonsterGroup(monstersCR1, '1')
+const thirdMonsters = new MonsterGroup(monstersCR1, '1');
 
 $(() => {
   $('#start-button').on('click', event => {
@@ -156,4 +202,4 @@ $(() => {
       console.log('too fast!');
     }
   })
-})
+});

@@ -39,7 +39,7 @@ h1 {
 
 .carousel-monster-container {
   height: 80%;
-  width: 80%;
+  width: 90%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -55,7 +55,7 @@ h1 {
 
 .carousel-img {
   height: 100%;
-  box-shadow: 0 0 8px 8px #310 inset;
+  /* box-shadow: 0 0 8px 8px #310 inset; */
   /* width: 60%; */
 }
 
@@ -118,4 +118,20 @@ h1 {
 
 .hide {
   display: none;
+}
+
+@media (max-width: 480px) {
+  .carousel {
+    height: fit-content;
+  }
+  .carousel-monster-container {
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  .carousel-img {
+    height: 20vh;
+  }
+  .carousel-monster-stats {
+    width: 96%;
+  }
 }
