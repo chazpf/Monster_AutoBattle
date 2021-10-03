@@ -115,9 +115,11 @@ h1 {
   padding: .25em;
   color: lightgreen;
   font-size: 2vw;
+  overflow: scroll;
 }
 
 #battle-log p {
+  font-size: .75em;
   margin-bottom: .25em;
 }
 

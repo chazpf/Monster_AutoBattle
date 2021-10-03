@@ -37,6 +37,29 @@ const monstersCR1 = [
   'tiger'
 ];
 
+const modifiers = {
+  1: -5,
+  2: -4,
+  3: -4,
+  4: -3,
+  5: -3,
+  6: -2,
+  7: -2,
+  8: -1,
+  9: -1,
+  10: 0,
+  11: 0,
+  12: 1,
+  13: 1,
+  14: 2,
+  15: 2,
+  16: 3,
+  17: 3,
+  18: 4,
+  19: 4,
+  20: 5,
+}
+
 let currentGroup;
 let playerMonster;
 let enemyMonster;
@@ -79,6 +102,7 @@ class Monster {
     this.hp = data.hit_points;
     this.currentHp = this.hp;
     this.ac = data.armor_class;
+    this.dex = data.dexterity;
     let attackIndex;
     if (data.actions[0].name === "Multiattack") {
       attackIndex = 1;
@@ -101,9 +125,14 @@ class Monster {
       this.attackString = `<strong>Attack: </strong>${this.attackName}, +${this.attackBonus} to hit, ${this.damageBonus} dmg`;
     }
   }
+  rollD20() {
+    return Math.floor(Math.random() * 20 ) + 1;
+  }
+  rollInitiative() {
+    return this.rollD20() + modifiers[`${this.dex}`];
+  }
   rollAttack() {
-    const d20roll = Math.floor(Math.random() * 20 ) + 1;
-    return d20roll + this.attackBonus;
+    return this.rollD20() + this.attackBonus;
   }
   rollDamage() {
     if (this.damageDice) {
@@ -123,13 +152,15 @@ class Monster {
   }
   attack(target) {
     const attackRoll = this.rollAttack();
+    let message;
     if (attackRoll >= target.ac) {
       const damage = this.rollDamage();
       target.currentHp -= damage;
-      console.log(`${this.name} used ${this.attackName} and rolled a ${attackRoll}. It hits ${target.name} for ${damage} damage!`);
+      message = `${this.name} used ${this.attackName} and rolled a ${attackRoll}. It hits ${target.name} for ${damage} damage!`;
     } else {
-      console.log(`${this.name} used ${this.attackName} and rolled a ${attackRoll}. It misses ${target.name}'s AC of ${target.ac}!`);
+      message = `${this.name} used ${this.attackName} and rolled a ${attackRoll}. It misses ${target.name}'s AC of ${target.ac}!`;
     }
+    return message;
   }
 }
 
@@ -201,10 +232,11 @@ const buildMonsterContainer = (monster) => {
   const $name = $('<p>').html(`<strong>${monster.name}</strong>`);
   const $hp = $('<p>').html(`<strong>HP: </strong>${monster.hp}`);
   const $ac = $('<p>').html(`<strong>AC: </strong>${monster.ac}`);
+  const $initiative = $('<p>').html(`<strong>Initiative: </strong>${modifiers[`${monster.dex}`]}`);
   const $attack = $('<p>').html(monster.attackString);
 
   $imgContainer.append($img)
-  $monsterStats.append($name).append($hp).append($ac).append($attack);
+  $monsterStats.append($name).append($hp).append($ac).append($initiative).append($attack);
   $monsterContainer.append($imgContainer).append($monsterStats);
   return $monsterContainer;
 }
@@ -225,7 +257,7 @@ const buildBattle = (monster) => {
   const $playerImg = $('<img>').addClass('img').attr('src', `${playerMonster.img}`);
   const $playerDescription = $('<div>').addClass('description');
   const $playerName = $('<p>').html(`<strong>${playerMonster.name}</strong>`);
-  const $playerHp = $('<p>').html(`<strong>HP: </strong>${playerMonster.hp}`);
+  const $playerHp = $('<p>').addClass('player-hp').html(`<strong>HP: </strong>${playerMonster.hp}`);
   const $playerAc = $('<p>').html(`<strong>AC: </strong>${playerMonster.ac}`);
   const $playerAttack = $('<p>').html(playerMonster.attackString);
 
@@ -235,7 +267,7 @@ const buildBattle = (monster) => {
   const $enemyImg = $('<img>').addClass('img').attr('src', `${enemyMonster.img}`);
   const $enemyDescription = $('<div>').addClass('description');
   const $enemyName = $('<p>').html(`<strong>${enemyMonster.name}</strong>`);
-  const $enemyHp = $('<p>').html(`<strong>HP: </strong>${enemyMonster.hp}`);
+  const $enemyHp = $('<p>').addClass('enemy-hp').html(`<strong>HP: </strong>${enemyMonster.hp}`);
   const $enemyAc = $('<p>').html(`<strong>AC: </strong>${enemyMonster.ac}`);
   const $enemyAttack = $('<p>').html(enemyMonster.attackString);
 
@@ -247,15 +279,61 @@ const buildBattle = (monster) => {
 
   $('body').append($battle);
   // run the battle
-  // runBattle(playerMonster, enemyMonster);
-  playerMonster.attack(enemyMonster);
-  enemyMonster.attack(playerMonster);
+  startBattle();
 
   // when battle is over, display resolution screen, which will show battle summary and have button to either restart or move onto next leve/carousel
 };
 
-const runBattle = (monster1, monster2) => {
+const startBattle = () => {
+  const playerInit = playerMonster.rollInitiative();
+  updateBattleLog(`${playerMonster.name} rolled ${playerInit} initiative`);
+  const enemyInit = enemyMonster.rollInitiative();
+  updateBattleLog(`${enemyMonster.name} rolled ${enemyInit} initiative`);
+  if (playerInit > enemyInit) {
+    updateBattleLog(`${playerMonster.name} goes first!`);
+    setTimeout(() => {
+      handleAttack('player');
+    }, 2000);
+  } else {
+    updateBattleLog(`${enemyMonster.name} goes first!`);
+    setTimeout(() => {
+      handleAttack('enemy');
+    }, 2000);
+  }
+}
 
+const updateBattleLog = text => {
+  const $text = $('<p>').text(text);
+  $('#battle-log').append($text);
+}
+
+const updateHP = () => {
+  $('.player-hp').html(`<strong>HP: </strong>${playerMonster.currentHp}`)
+  $('.enemy-hp').html(`<strong>HP: </strong>${enemyMonster.currentHp}`)
+}
+
+const handleAttack = side => {
+  if (side === 'player') {
+    updateBattleLog(playerMonster.attack(enemyMonster));
+    updateHP();
+    setTimeout(() => {
+      if (enemyMonster.currentHp > 0) {
+        handleAttack('enemy');
+      } else {
+        updateBattleLog(`${playerMonster.name} wins!`)
+      }
+    }, 2000);
+  } else if (side === 'enemy') {
+    updateBattleLog(enemyMonster.attack(playerMonster));
+    updateHP();
+    setTimeout(() => {
+      if (playerMonster.currentHp > 0) {
+        handleAttack('player');
+      } else {
+        updateBattleLog(`${enemyMonster.name} wins!`)
+      }
+    }, 2000);
+  }
 }
 
 const firstMonsters = new MonsterGroup(monstersCROneFourth, '1-4', '1/4');
