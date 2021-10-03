@@ -37,6 +37,8 @@ const monstersCR1 = [
   'tiger'
 ];
 
+let currentGroup;
+
 class MonsterGroup {
   constructor(monstersArr, fileCR, urlCR) {
     this.monsterNames = monstersArr;
@@ -61,10 +63,14 @@ class MonsterGroup {
     $('.carousel').remove();
     buildCarousel(this.monsterNames, this.monsterImgs, this.monsterData);
   }
+  randomIndex() {
+    return Math.floor(Math.random() * this.monsterNames.length);
+  }
 };
 
 class Monster {
   constructor(img, data) {
+    this.index = currentGroup.monsterImgs.indexOf(img);
     this.img = img;
     this.name = data.name;
     this.hp = data.hit_points;
@@ -137,8 +143,8 @@ const buildCarousel = (namesArr, imgArr, data) => {
   }
 
   const select = () => {
-    const testMonster = new Monster(firstMonsters.monsterImgs[carouselIndex], firstMonsters.monsterData[carouselIndex])
-    console.log(testMonster);
+    const playersMonster = new Monster(currentGroup.monsterImgs[carouselIndex], currentGroup.monsterData[carouselIndex]);
+    buildBattle(playersMonster);
   }
 
   $('#next').on('click', () => {
@@ -167,10 +173,17 @@ const buildMonsterContainer = (monster) => {
   return $monsterContainer;
 }
 
-const buildBattle = () => {
-  // build the html to layout the battle page.
-  // receive the data for the player's monster
+const buildBattle = (monster) => {
+  const playersMonster = monster;
   // randomly select a diffect monster from the group
+  let randomIndex = currentGroup.randomIndex();
+  while (randomIndex === monster.index) {
+    randomIndex = currentGroup.randomIndex();
+  }
+  const enemyMonster = new Monster(currentGroup.monsterImgs[randomIndex], currentGroup.monsterData[randomIndex])
+  console.log(playersMonster, enemyMonster);
+  // build the html to layout the battle page.
+
   // instantiate objects for player's monster and enemy monster
   // run the battle
   // when battle is over, display resolution screen, which will show battle summary and have button to either restart or move onto next leve/carousel
@@ -179,12 +192,14 @@ const buildBattle = () => {
 const firstMonsters = new MonsterGroup(monstersCROneFourth, '1-4', '1/4');
 const secondMonsters = new MonsterGroup(monstersCROneHalf, '1-2', '1/2');
 const thirdMonsters = new MonsterGroup(monstersCR1, '1');
+currentGroup = firstMonsters;
 
 $(() => {
   $('#start-button').on('click', event => {
-    if (firstMonsters.monsterData) {
+    if (currentGroup.monsterData) {
       $('#start-container').remove();
-      firstMonsters.generateCarousel();
+      currentGroup.generateCarousel();
+
     } else {
       console.log('too fast!');
     }
