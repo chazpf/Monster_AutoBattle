@@ -38,6 +38,8 @@ const monstersCR1 = [
 ];
 
 let currentGroup;
+let playerMonster;
+let enemyMonster;
 
 class MonsterGroup {
   constructor(monstersArr, fileCR, urlCR) {
@@ -53,6 +55,7 @@ class MonsterGroup {
       url: `https://api.open5e.com/monsters/?document__slug=wotc-srd&challenge_rating=${this.urlCR}`,
       type: "GET"
     }).then(data => {
+      console.log(data);
       const dataTrimmed = data.results.filter(monster => this.monsterNames.includes(monster.slug))
       this.monsterData = dataTrimmed;
     }, () => {
@@ -96,6 +99,36 @@ class Monster {
       this.attackString = `<strong>Attack: </strong>${this.attackName}, +${this.attackBonus} to hit, ${this.damageDice} dmg`;
     } else if (this.damageBonus) {
       this.attackString = `<strong>Attack: </strong>${this.attackName}, +${this.attackBonus} to hit, ${this.damageBonus} dmg`;
+    }
+  }
+  rollAttack() {
+    const d20roll = Math.floor(Math.random() * 20 ) + 1;
+    return d20roll + this.attackBonus;
+  }
+  rollDamage() {
+    if (this.damageDice) {
+      const [diceNumber, diceType] = this.damageDice.split('d');
+      let diceResult = 0;
+      for (let i=0; i<diceNumber; i++) {
+        diceResult += Math.floor(Math.random() * diceType) + 1;
+      }
+      if (this.damageBonus) {
+        return diceResult + this.damageBonus;
+      } else {
+        return diceResult;
+      }
+    } else {
+      return this.attackBonus;
+    }
+  }
+  attack(target) {
+    const attackRoll = this.rollAttack();
+    if (attackRoll >= target.ac) {
+      const damage = this.rollDamage();
+      target.currentHp -= damage;
+      console.log(`${this.name} used ${this.attackName} and rolled a ${attackRoll}. It hits ${target.name} for ${damage} damage!`);
+    } else {
+      console.log(`${this.name} used ${this.attackName} and rolled a ${attackRoll}. It misses ${target.name}'s AC of ${target.ac}!`);
     }
   }
 }
@@ -177,13 +210,13 @@ const buildMonsterContainer = (monster) => {
 }
 
 const buildBattle = (monster) => {
-  const playerMonster = monster;
+  playerMonster = monster;
 
   let randomIndex = currentGroup.randomIndex();
   while (randomIndex === monster.index) {
     randomIndex = currentGroup.randomIndex();
   }
-  const enemyMonster = new Monster(currentGroup.monsterImgs[randomIndex], currentGroup.monsterData[randomIndex]);
+  enemyMonster = new Monster(currentGroup.monsterImgs[randomIndex], currentGroup.monsterData[randomIndex]);
   console.log(playerMonster, enemyMonster);
 
   // build the html to layout the battle page.
@@ -215,13 +248,19 @@ const buildBattle = (monster) => {
   $('body').append($battle);
   // run the battle
   // runBattle(playerMonster, enemyMonster);
+  playerMonster.attack(enemyMonster);
+  enemyMonster.attack(playerMonster);
 
   // when battle is over, display resolution screen, which will show battle summary and have button to either restart or move onto next leve/carousel
 };
 
+const runBattle = (monster1, monster2) => {
+
+}
+
 const firstMonsters = new MonsterGroup(monstersCROneFourth, '1-4', '1/4');
-const secondMonsters = new MonsterGroup(monstersCROneHalf, '1-2', '1/2');
-const thirdMonsters = new MonsterGroup(monstersCR1, '1');
+// const secondMonsters = new MonsterGroup(monstersCROneHalf, '1-2', '1/2');
+// const thirdMonsters = new MonsterGroup(monstersCR1, '1');
 currentGroup = firstMonsters;
 
 $(() => {
