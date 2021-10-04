@@ -544,6 +544,7 @@ const winRound = () => {
       if (currentGroup.monsterData) {
         $('.modal').remove();
         $('.battle').remove();
+        $('<div>').addClass('rules-description').insertAfter($('header'));
         currentGroup.generateCarousel();
       } else {
         console.log('too fast!');

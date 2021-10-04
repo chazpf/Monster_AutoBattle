@@ -97,12 +97,17 @@ h1 {
   padding-top: 4vh;
 }
 
-.monster {
-  height: 90%;
-  width: 30%;
+#player-monster {
+  border: 2px solid lightgreen;
+}
+
+#enemy-monster {
+  border: 2px solid red;
 }
 
 .monster {
+  height: 90%;
+  width: 30%;
   display: flex;
   flex-direction: column;
   justify-content: center;
