@@ -2,17 +2,23 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  --lightgreen: #8AF04A;
+  --darkgreen: #54A322;
+  --orange: #990011;
+  --blue: #3C50F0;
+  --bgbeige: #A37767;
+
 }
 
 body {
-  background: #310;
+  background: var(--bgbeige);
   padding: 1vh 1vw;
 }
 
-h1 {
+header h1 {
   text-align: center;
   font-size: min(6vw, 58px);
-  color: lightgreen;
+  color: var(--blue);
   margin-bottom: 1em;
 }
 
@@ -30,10 +36,18 @@ h1 {
   height: 40vh;
   max-width: 937px;
   margin: 0 auto;
+  padding: 1%;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
+  border: 1px solid var(--blue);
+  border-radius: 5px;
+}
+
+.carousel-header {
+  font-size: min(4vw, 38px);
+  color: var(--blue);
 }
 
 .carousel-monster-container {
@@ -50,22 +64,10 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
 
-.carousel-img{
+.carousel-img {
   height: 100%;
-  width: fit-content;
-  box-shadow: 0 0 8px 10px #310 inset;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  border: 4px solid #310;
-}
-
-.carousel-img-sizer {
-  height: 100%;
-  /* width: 60%; */
 }
 
 .carousel-monster-stats {
@@ -74,10 +76,13 @@ h1 {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+  border: 1px solid var(--blue);
+  border-radius: 5px;
+  padding: 0 2%;
 }
 
 .carousel-monster-stats p, .carousel-monster-stats h3 {
-  color: lightgreen;
+  color: var(--blue);
 }
 
 .carousel-monster-stats h3 {
@@ -98,11 +103,13 @@ h1 {
 }
 
 #player-monster {
-  border: 2px solid lightgreen;
+  border: 2px solid var(--lightgreen);
+  color: var(--lightgreen);
 }
 
 #enemy-monster {
-  border: 2px solid red;
+  border: 2px solid var(--orange);
+  color: var(--orange);
 }
 
 .monster {
@@ -112,21 +119,14 @@ h1 {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 5%;
+  border-radius: 5px;
 }
 
 .img {
-  width: fit-content;
-  box-shadow: 0 0 8px 10px #310 inset;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  border: 4px solid #310;
-  margin-bottom: 3%;
-}
-
-.img-sizer {
-  /* width: 98%; */
   max-width: 25vw;
+  max-height: 300px;
+  margin-bottom: 2em;
 }
 
 .description {
@@ -134,24 +134,19 @@ h1 {
   height: 48%;
 }
 
-.description p {
-  color: lightgreen;
-}
-
 #battle-log {
   height: fit-content;
   max-height: 90%;
   width: 30%;
   padding: .25em;
-  color: lightgreen;
+  color: var(--blue);
   font-size: 2vw;
-  overflow: scroll;
   display: flex;
   flex-direction: column-reverse;
 }
 
 #battle-log p {
-  font-size: .75em;
+  font-size: min(.75em, 22px);
   margin-bottom: .25em;
 }
 
@@ -162,7 +157,7 @@ h1 {
 }
 
 .modal {
-  background-color: rgba(51, 17, 0, 0.4);
+  background-color: rgb(163, 119, 103, 0.4);
   position: fixed;
   top: 0;
   left: 0;
@@ -173,37 +168,60 @@ h1 {
 }
 
 .modal-textbox {
-  background-color: rgb(51, 17, 0);
+  background-color: var(--bgbeige);
   height: 40vh;
   width: 60vw;
+  max-width: 800px;
   margin: 30vh auto;
+  text-align: center;
+  border-radius: 5px;
 }
 
-.modal-textbox p {
-  color: lightgreen;
+.modal-textbox h1 {
+  font-size: min(6vw, 58px);
+  margin: 10% 0;
+}
+
+.modal-win {
+  border: 2px solid var(--lightgreen);
+  color: var(--lightgreen);
+}
+
+.modal-lose {
+  border: 2px solid var(--orange);
+  color: var(--orange);
 }
 
 .modal-button {
-  width: 10%;
-  margin: 0 auto;
+  width: fit-content;
+  margin: 10% 46%;
 }
 
 .hide {
   display: none;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .carousel {
     height: fit-content;
   }
+
   .carousel-monster-container {
     flex-direction: column;
     justify-content: flex-start;
   }
+
   .carousel-img {
     height: 20vh;
+    margin: 5% 0;
   }
+
   .carousel-monster-stats {
     width: 96%;
+  }
+
+  .monster {
+    padding: 2%;
+    justify-content: flex-start;
   }
 }
