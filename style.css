@@ -4,7 +4,7 @@
   box-sizing: border-box;
   --lightgreen: #8AF04A;
   --darkgreen: #54A322;
-  --orange: #990011;
+  --red: #990011;
   --blue: #3C50F0;
   --bgbeige: #A37767;
 
@@ -108,8 +108,8 @@ header h1 {
 }
 
 #enemy-monster {
-  border: 2px solid var(--orange);
-  color: var(--orange);
+  border: 2px solid var(--red);
+  color: var(--red);
 }
 
 .monster {
@@ -139,7 +139,6 @@ header h1 {
   max-height: 90%;
   width: 30%;
   padding: .25em;
-  color: var(--blue);
   overflow: hidden;
   font-size: max(3vw, 14px);
   display: flex;
@@ -149,6 +148,14 @@ header h1 {
 #battle-log p {
   font-size: min(.75em, 22px);
   margin-bottom: .25em;
+}
+
+.player-log {
+  color: var(--lightgreen);
+}
+
+.enemy-log {
+  color: var(--red)
 }
 
 .dim {
@@ -189,8 +196,8 @@ header h1 {
 }
 
 .modal-lose {
-  border: 2px solid var(--orange);
-  color: var(--orange);
+  border: 2px solid var(--red);
+  color: var(--red);
 }
 
 .modal-button {

@@ -422,10 +422,8 @@ const buildBattle = (monster) => {
   }
   enemyMonster = new Monster(currentGroup.monsterImgs[randomIndex], currentGroup.monsterData[randomIndex]);
 
-  // build the html to layout the battle page.
   const $battle = $('<div>').addClass('battle');
   const $playerMonster = $('<div>').addClass('monster').attr('id', 'player-monster');
-  // const $playerImg = $('<div>').addClass('img').css('background-image', `url(${playerMonster.img})`);
   const $playerImg = $('<img>').addClass('img').attr('src', `${playerMonster.img}`);
   const $playerDescription = $('<div>').addClass('description');
   const $playerName = $('<p>').html(`<strong>${playerMonster.name}</strong>`);
@@ -436,7 +434,6 @@ const buildBattle = (monster) => {
   const $battleLog = $('<div>').attr('id', 'battle-log');
 
   const $enemyMonster = $('<div>').addClass('monster').attr('id', 'enemy-monster');
-  // const $enemyImg = $('<div>').addClass('img').css('background-image', `url(${enemyMonster.img})`);
   const $enemyImg = $('<img>').addClass('img').attr('src', `${enemyMonster.img}`);
   const $enemyDescription = $('<div>').addClass('description');
   const $enemyName = $('<p>').html(`<strong>${enemyMonster.name}</strong>`);
@@ -451,24 +448,26 @@ const buildBattle = (monster) => {
   $battle.append($playerMonster).append($battleLog).append($enemyMonster);
 
   $('body').append($battle);
-  // run the battle
-  startBattle();
 
-  // when battle is over, display resolution screen, which will show battle summary and have button to either restart or move onto next leve/carousel
+  startBattle();
 };
 
 const startBattle = () => {
   const playerInit = playerMonster.rollInitiative();
   updateBattleLog(`${playerMonster.name} rolled ${playerInit} initiative`);
+  $('#battle-log').children().eq(0).addClass('player-log')
   const enemyInit = enemyMonster.rollInitiative();
   updateBattleLog(`${enemyMonster.name} rolled ${enemyInit} initiative`);
+  $('#battle-log').children().eq(0).addClass('enemy-log')
   if (playerInit > enemyInit) {
     updateBattleLog(`${playerMonster.name} goes first!`);
+    $('#battle-log').children().eq(0).addClass('player-log')
     setTimeout(() => {
       handleAttack('player');
     }, 2000);
   } else {
     updateBattleLog(`${enemyMonster.name} goes first!`);
+    $('#battle-log').children().eq(0).addClass('enemy-log')
     setTimeout(() => {
       handleAttack('enemy');
     }, 2000);
@@ -489,12 +488,14 @@ const updateHP = () => {
 const handleAttack = side => {
   if (side === 'player') {
     updateBattleLog(playerMonster.attack(enemyMonster));
+    $('#battle-log').children().eq(0).addClass('player-log')
     updateHP();
     setTimeout(() => {
       if (enemyMonster.currentHp > 0) {
         handleAttack('enemy');
       } else {
         updateBattleLog(`${playerMonster.name} wins!`);
+        $('#battle-log').children().eq(0).addClass('player-log')
         setTimeout(() => {
           winRound();
         }, 2000);
@@ -502,12 +503,14 @@ const handleAttack = side => {
     }, 2000);
   } else if (side === 'enemy') {
     updateBattleLog(enemyMonster.attack(playerMonster));
+    $('#battle-log').children().eq(0).addClass('enemy-log')
     updateHP();
     setTimeout(() => {
       if (playerMonster.currentHp > 0) {
         handleAttack('player');
       } else {
         updateBattleLog(`${enemyMonster.name} wins!`)
+        $('#battle-log').children().eq(0).addClass('enemy-log')
         setTimeout(() => {
           lose();
         }, 2000);
