@@ -1,41 +1,53 @@
-const monstersCROneFourth = [
-  'blink-dog',
-  'constrictor-snake',
-  'dretch',
-  'flying-sword',
-  'giant-centipede',
-  'goblin',
-  'skeleton',
-  'sprite',
-  'violet-fungus',
-  'zombie'
-];
-
-const monstersCROneHalf = [
-  'black-bear',
-  'cockatrice',
-  'crocodile',
-  'giant-wasp',
-  'gray-ooze',
-  'hobgoblin',
-  'magmin',
-  'rust-monster',
-  'shadow',
-  'worg'
-];
-
-const monstersCR1 = [
-  'animated-armor',
-  'brass-dragon-wyrmling',
-  'bugbear',
-  'death-dog',
-  'dire-wolf',
-  'ghoul',
-  'giant-toad',
-  'giant-vulture',
-  'imp',
-  'tiger'
-];
+const monsterManual = [
+  [
+    [
+      'blink-dog',
+      'constrictor-snake',
+      'dretch',
+      'flying-sword',
+      'giant-centipede',
+      'goblin',
+      'skeleton',
+      'sprite',
+      'violet-fungus',
+      'zombie'
+    ],
+    '1-4',
+    '1/4',
+  ],
+  [
+    [
+      'black-bear',
+      'cockatrice',
+      'crocodile',
+      'giant-wasp',
+      'gray-ooze',
+      'hobgoblin',
+      'magmin',
+      'rust-monster',
+      'shadow',
+      'worg'
+    ],
+    '1-2',
+    '1/2',
+  ],
+  [
+    [
+      'animated-armor',
+      'brass-dragon-wyrmling',
+      'bugbear',
+      'death-dog',
+      'dire-wolf',
+      'ghoul',
+      'giant-toad',
+      'giant-vulture',
+      'imp',
+      'tiger'
+    ],
+    '1',
+    '1'
+  ],
+]
 
 const modifiers = {
   1: -5,
@@ -60,10 +72,6 @@ const modifiers = {
   20: 5,
 }
 
-let currentGroup;
-let playerMonster;
-let enemyMonster;
-
 class MonsterGroup {
   constructor(monstersArr, fileCR, urlCR) {
     this.monsterNames = monstersArr;
@@ -73,12 +81,11 @@ class MonsterGroup {
       this.monsterImgs.push(filepath);
     }
     this.fileCR = fileCR;
-    this.urlCR = urlCR || fileCR;
+    this.urlCR = urlCR;
     $.ajax({
       url: `https://api.open5e.com/monsters/?document__slug=wotc-srd&challenge_rating=${this.urlCR}`,
       type: "GET"
     }).then(data => {
-      console.log(data);
       const dataTrimmed = data.results.filter(monster => this.monsterNames.includes(monster.slug))
       this.monsterData = dataTrimmed;
     }, () => {
@@ -147,7 +154,7 @@ class Monster {
         return diceResult;
       }
     } else {
-      return this.attackBonus;
+      return this.damageBonus;
     }
   }
   attack(target) {
@@ -162,7 +169,21 @@ class Monster {
     }
     return message;
   }
-}
+};
+
+let nextGroupIndex = 0;
+let currentGroup;
+
+const buildNextGroup = () => {
+  if (nextGroupIndex < monsterManual.length) {
+    const nextGroup = monsterManual[nextGroupIndex]
+    currentGroup = new MonsterGroup(nextGroup[0], nextGroup[1], nextGroup[2]);
+  }
+  nextGroupIndex++;
+};
+
+let playerMonster;
+let enemyMonster;
 
 const buildCarousel = (namesArr, imgArr, data) => {
   const $carousel = $('<div>').addClass('carousel');
@@ -239,7 +260,7 @@ const buildMonsterContainer = (monster) => {
   $monsterStats.append($name).append($hp).append($ac).append($initiative).append($attack);
   $monsterContainer.append($imgContainer).append($monsterStats);
   return $monsterContainer;
-}
+};
 
 const buildBattle = (monster) => {
   playerMonster = monster;
@@ -249,7 +270,6 @@ const buildBattle = (monster) => {
     randomIndex = currentGroup.randomIndex();
   }
   enemyMonster = new Monster(currentGroup.monsterImgs[randomIndex], currentGroup.monsterData[randomIndex]);
-  console.log(playerMonster, enemyMonster);
 
   // build the html to layout the battle page.
   const $battle = $('<div>').addClass('battle');
@@ -300,17 +320,18 @@ const startBattle = () => {
       handleAttack('enemy');
     }, 2000);
   }
-}
+};
 
 const updateBattleLog = text => {
+  $('#battle-log').children().addClass('dim');
   const $text = $('<p>').text(text);
-  $('#battle-log').append($text);
-}
+  $('#battle-log').prepend($text);
+};
 
 const updateHP = () => {
   $('.player-hp').html(`<strong>HP: </strong>${playerMonster.currentHp}`)
   $('.enemy-hp').html(`<strong>HP: </strong>${enemyMonster.currentHp}`)
-}
+};
 
 const handleAttack = side => {
   if (side === 'player') {
@@ -320,7 +341,10 @@ const handleAttack = side => {
       if (enemyMonster.currentHp > 0) {
         handleAttack('enemy');
       } else {
-        updateBattleLog(`${playerMonster.name} wins!`)
+        updateBattleLog(`${playerMonster.name} wins!`);
+        setTimeout(() => {
+          winRound();
+        }, 2000);
       }
     }, 2000);
   } else if (side === 'enemy') {
@@ -331,22 +355,88 @@ const handleAttack = side => {
         handleAttack('player');
       } else {
         updateBattleLog(`${enemyMonster.name} wins!`)
+        setTimeout(() => {
+          lose();
+        }, 2000);
       }
     }, 2000);
   }
-}
+};
 
-const firstMonsters = new MonsterGroup(monstersCROneFourth, '1-4', '1/4');
-// const secondMonsters = new MonsterGroup(monstersCROneHalf, '1-2', '1/2');
-// const thirdMonsters = new MonsterGroup(monstersCR1, '1');
-currentGroup = firstMonsters;
+const winRound = () => {
+  buildNextGroup();
+  buildModal();
+  const $h1 = $('<h1>').text('Victory!');
+  const $message = $('<p>').text(`The enemy ${enemyMonster.name} was vanquished. You may progress to the next challenge.`);
+  const $button = $('<button>').addClass('modal-button');
+  $('.modal-textbox').append($h1).append($message);
+
+  if (nextGroupIndex > monsterManual.length) {
+    nextGroupIndex = 0
+    buildNextGroup();
+    $message.text(`The enemy ${enemyMonster.name} was vanquished.`);
+    const $finalMessage = $('<p>').text(`You have defeated every challenge. Bask in your victory, you earned it!`);
+    $('.modal-textbox').append($finalMessage);
+    $button.text('Restart');
+
+    $button.on('click', restart);
+
+  } else {
+    $button.text('Proceed');
+
+    $button.on('click', () => {
+      if (currentGroup.monsterData) {
+        $('.modal').remove();
+        $('.battle').remove();
+        currentGroup.generateCarousel();
+      } else {
+        console.log('too fast!');
+      }
+    })
+  }
+
+  $('.modal-textbox').append($button);
+  $('.modal').removeClass('hide');
+};
+
+const lose = () => {
+  nextGroupIndex = 0;
+  buildNextGroup();
+  buildModal();
+  const $h1 = $('<h1>').text('You lose...');
+  const $message = $('<p>').text(`Your ${playerMonster.name} was defeated. Try again and may the dice favor you next time.`);
+  const $button = $('<button>').addClass('modal-button').text('Restart')
+
+  $button.on('click', restart);
+
+  $('.modal-textbox').append($h1).append($message).append($button);
+  $('.modal').removeClass('hide');
+};
+
+const buildModal = () => {
+  const $modal = $('<div>').addClass('modal').addClass('hide');
+  const $modalTextBox = $('<div>').addClass('modal-textbox');
+  $modal.append($modalTextBox);
+  $('body').append($modal);
+};
+
+const restart = () => {
+  if (currentGroup.monsterData) {
+    $('.modal').remove();
+    $('.battle').remove();
+    $('<div>').addClass('rules-description').insertAfter($('header'));
+    currentGroup.generateCarousel();
+  } else {
+    console.log('too fast!');
+  }
+};
 
 $(() => {
+  buildNextGroup();
   $('#start-button').on('click', event => {
     if (currentGroup.monsterData) {
       $('#start-container').remove();
       currentGroup.generateCarousel();
-
     } else {
       console.log('too fast!');
     }
