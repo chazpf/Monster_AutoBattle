@@ -2,7 +2,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  border: 1px solid red;
 }
 
 body {
@@ -45,17 +44,27 @@ h1 {
   align-items: center;
 }
 
-.carousel-img-container{
+.carousel-img-container {
   height: 95%;
+  width: 60%;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 60%;
+
 }
 
-.carousel-img {
+.carousel-img{
   height: 100%;
-  /* box-shadow: 0 0 8px 8px #310 inset; */
+  width: fit-content;
+  box-shadow: 0 0 8px 10px #310 inset;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 4px solid #310;
+}
+
+.carousel-img-sizer {
+  height: 100%;
   /* width: 60%; */
 }
 
@@ -67,8 +76,12 @@ h1 {
   justify-content: space-evenly;
 }
 
-.carousel-monster-stats p {
+.carousel-monster-stats p, .carousel-monster-stats h3 {
   color: lightgreen;
+}
+
+.carousel-monster-stats h3 {
+  font-size: 1.5em;
 }
 
 #carousel-button-container {
@@ -97,9 +110,18 @@ h1 {
 }
 
 .img {
+  width: fit-content;
+  box-shadow: 0 0 8px 10px #310 inset;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 4px solid #310;
+  margin-bottom: 3%;
+}
+
+.img-sizer {
   /* width: 98%; */
   max-width: 25vw;
-  margin-bottom: 3%;
 }
 
 .description {
@@ -150,7 +172,6 @@ h1 {
   height: 40vh;
   width: 60vw;
   margin: 30vh auto;
-  border: 2px solid lightgreen;
 }
 
 .modal-textbox p {

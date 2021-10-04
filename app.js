@@ -287,7 +287,6 @@ class Monster {
       let diceResult = 0;
       if (this.damageDice.includes('+')) {
         const diceSplit = this.damageDice.split('+');
-        console.log(diceSplit);
         for (const die of diceSplit) {
           const [diceNumber, diceType] = die.split('d');
           for (let i=0; i<diceNumber; i++) {
@@ -323,7 +322,7 @@ class Monster {
   }
 };
 
-let nextGroupIndex = 11;
+let nextGroupIndex = 0;
 let currentGroup;
 let playerMonster;
 let enemyMonster;
@@ -399,14 +398,16 @@ const buildCarousel = (namesArr, imgArr, data) => {
 const buildMonsterContainer = (monster) => {
   const $monsterContainer = $('<div>').addClass('carousel-monster-container').addClass('hide');
   const $imgContainer = $('<div>').addClass('carousel-img-container');
-  const $img = $('<img>').addClass('carousel-img').attr('src', monster.img);
+  const $img = $('<div>').addClass('carousel-img').css('background-image', `url(${monster.img})`);
+  const $imgSizer = $('<img>').addClass('carousel-img-sizer').attr('src', monster.img).css('visibility', 'hidden');
   const $monsterStats = $('<div>').addClass('carousel-monster-stats');
-  const $name = $('<p>').html(`<strong>${monster.name}</strong>`);
+  const $name = $('<h3>').html(`<strong>${monster.name}</strong>`);
   const $hp = $('<p>').html(`<strong>HP: </strong>${monster.hp}`);
   const $ac = $('<p>').html(`<strong>AC: </strong>${monster.ac}`);
   const $initiative = $('<p>').html(`<strong>Initiative: </strong>${monster.initStr}`);
   const $attack = $('<p>').html(monster.attackString);
 
+  $img.append($imgSizer)
   $imgContainer.append($img)
   $monsterStats.append($name).append($hp).append($ac).append($initiative).append($attack);
   $monsterContainer.append($imgContainer).append($monsterStats);
@@ -425,7 +426,8 @@ const buildBattle = (monster) => {
   // build the html to layout the battle page.
   const $battle = $('<div>').addClass('battle');
   const $playerMonster = $('<div>').addClass('monster').attr('id', 'player-monster');
-  const $playerImg = $('<img>').addClass('img').attr('src', `${playerMonster.img}`);
+  const $playerImg = $('<div>').addClass('img').css('background-image', `url(${playerMonster.img})`);
+  const $playerImgSizer = $('<img>').addClass('img-sizer').attr('src', `${playerMonster.img}`).css('visibility', 'hidden');
   const $playerDescription = $('<div>').addClass('description');
   const $playerName = $('<p>').html(`<strong>${playerMonster.name}</strong>`);
   const $playerHp = $('<p>').addClass('player-hp').html(`<strong>HP: </strong>${playerMonster.hp}`);
@@ -435,14 +437,17 @@ const buildBattle = (monster) => {
   const $battleLog = $('<div>').attr('id', 'battle-log');
 
   const $enemyMonster = $('<div>').addClass('monster').attr('id', 'enemy-monster');
-  const $enemyImg = $('<img>').addClass('img').attr('src', `${enemyMonster.img}`);
+  const $enemyImg = $('<div>').addClass('img').css('background-image', `url(${enemyMonster.img})`);
+  const $enemyImgSizer = $('<img>').addClass('img-sizer').attr('src', `${enemyMonster.img}`).css('visibility', 'hidden');
   const $enemyDescription = $('<div>').addClass('description');
   const $enemyName = $('<p>').html(`<strong>${enemyMonster.name}</strong>`);
   const $enemyHp = $('<p>').addClass('enemy-hp').html(`<strong>HP: </strong>${enemyMonster.hp}`);
   const $enemyAc = $('<p>').html(`<strong>AC: </strong>${enemyMonster.ac}`);
   const $enemyAttack = $('<p>').html(enemyMonster.attackString);
 
+  $playerImg.append($playerImgSizer);
   $playerDescription.append($playerName).append($playerHp).append($playerAc).append($playerAttack);
+  $enemyImg.append($enemyImgSizer);
   $enemyDescription.append($enemyName).append($enemyHp).append($enemyAc).append($enemyAttack);
   $playerMonster.append($playerImg).append($playerDescription);
   $enemyMonster.append($enemyImg).append($enemyDescription);
@@ -520,7 +525,7 @@ const winRound = () => {
   const $h1 = $('<h1>').text('Victory!');
   const $message = $('<p>').text(`The enemy ${enemyMonster.name} was vanquished. You may progress to the next challenge.`);
   const $button = $('<button>').addClass('modal-button');
-  $('.modal-textbox').append($h1).append($message);
+  $('.modal-textbox').append($h1).append($message).css('border', '2px solid lightgreen');
 
   if (nextGroupIndex > monsterManual.length) {
     nextGroupIndex = 0
@@ -560,7 +565,7 @@ const lose = () => {
 
   $button.on('click', restart);
 
-  $('.modal-textbox').append($h1).append($message).append($button);
+  $('.modal-textbox').append($h1).append($message).append($button).css('border', '2px solid red');
   $('.modal').removeClass('hide');
 };
 
