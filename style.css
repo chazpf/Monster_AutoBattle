@@ -140,7 +140,8 @@ header h1 {
   width: 30%;
   padding: .25em;
   color: var(--blue);
-  font-size: 2vw;
+  overflow: hidden;
+  font-size: max(3vw, 14px);
   display: flex;
   flex-direction: column-reverse;
 }
