@@ -47,6 +47,128 @@ const monsterManual = [
     '1',
     '1'
   ],
+  [
+    [
+      'ankheg',
+      'ettercap',
+      'gargoyle',
+      'ghast',
+      'gibbering-mouther',
+      'mimic',
+      'ogre',
+      'rhinoceros',
+      'white-dragon-wyrmling',
+      'will-o-wisp'
+    ],
+    '2',
+    '2'
+  ],
+  [
+    [
+      'basilisk',
+      'bearded-devil',
+      'giant-scorpion',
+      'gold-dragon-wyrmling',
+      'hell-hound',
+      'manticore',
+      'minotaur',
+      'mummy',
+      'nightmare',
+      'owlbear'
+    ],
+    '3',
+    '3'
+  ],
+  [
+    [
+      'black-pudding',
+      'chuul',
+      'couatl',
+      'elephant',
+      'ettin',
+      'ghost',
+      'lamia',
+      'red-dragon-wyrmling',
+      'succubusincubus',
+      'wereboar'
+    ],
+    '4',
+    '4'
+  ],
+  [
+    [
+      'barbed-devil',
+      'bulette',
+      'earth-elemental',
+      'flesh-golem',
+      'gorgon',
+      'hill-giant',
+      'otyugh',
+      'triceratops',
+      'troll',
+      'wraith'
+    ],
+    '5',
+    '5'
+  ],
+  [
+    [
+      'chimera',
+      'drider',
+      'invisible-stalker',
+      'mammoth',
+      'medusa',
+      'vrock',
+      'wyvern',
+      'young-white-dragon'
+    ],
+    '6',
+    '6'
+  ],
+  [
+    [
+      'giant-ape',
+      'oni',
+      'shield-guardian',
+      'stone-giant',
+      'young-black-dragon'
+    ],
+    '7',
+    '7'
+  ],
+  [
+    [
+      'frost-giant',
+      'hezrou',
+      'hydra',
+      'spirit-naga',
+      'tyrannosaurus-rex'
+    ],
+    '8',
+    '8'
+  ],
+  [
+    [
+      'clay-golem',
+      'fire-giant',
+      'glabrezu',
+      'treant',
+      'young-silver-dragon'
+    ],
+    '9',
+    '9'
+  ],
+  [
+    [
+      'aboleth',
+      'deva',
+      'guardian-naga',
+      'stone-golem',
+      'young-red-dragon'
+    ],
+    '10',
+    '10'
+  ],
 ]
 
 const modifiers = {
@@ -70,6 +192,16 @@ const modifiers = {
   18: 4,
   19: 4,
   20: 5,
+  21: 5,
+  22: 6,
+  23: 6,
+  24: 7,
+  25: 7,
+  26: 8,
+  27: 8,
+  28: 9,
+  29: 9,
+  30: 10,
 }
 
 class MonsterGroup {
@@ -110,13 +242,22 @@ class Monster {
     this.currentHp = this.hp;
     this.ac = data.armor_class;
     this.dex = data.dexterity;
+    this.initiative = modifiers[`${this.dex}`];
+    if (modifiers[this.dex] > 0) {
+      this.initStr = `+${this.initiative}`
+    } else {
+      this.initStr = `${this.initiative}`
+    }
     let attackIndex;
-    if (data.actions[0].name === "Multiattack") {
+    if (data.actions[0].name.includes('Multiattack')) {
       attackIndex = 1;
     } else {
       attackIndex = 0;
     }
     this.attackName = data.actions[attackIndex].name;
+    if (this.attackName.includes('(')) {
+      this.attackName = this.attackName.split(' (')[0];
+    }
     this.attackBonus = data.actions[attackIndex].attack_bonus || 0;
     if (data.actions[attackIndex].damage_bonus) {
       this.damageBonus = data.actions[attackIndex].damage_bonus;
@@ -136,17 +277,28 @@ class Monster {
     return Math.floor(Math.random() * 20 ) + 1;
   }
   rollInitiative() {
-    return this.rollD20() + modifiers[`${this.dex}`];
+    return this.rollD20() + this.initiative;
   }
   rollAttack() {
     return this.rollD20() + this.attackBonus;
   }
   rollDamage() {
     if (this.damageDice) {
-      const [diceNumber, diceType] = this.damageDice.split('d');
       let diceResult = 0;
-      for (let i=0; i<diceNumber; i++) {
-        diceResult += Math.floor(Math.random() * diceType) + 1;
+      if (this.damageDice.includes('+')) {
+        const diceSplit = this.damageDice.split('+');
+        console.log(diceSplit);
+        for (const die of diceSplit) {
+          const [diceNumber, diceType] = die.split('d');
+          for (let i=0; i<diceNumber; i++) {
+            diceResult += Math.floor(Math.random() * diceType) + 1;
+          }
+        }
+      } else {
+        const [diceNumber, diceType] = this.damageDice.split('d');
+        for (let i=0; i<diceNumber; i++) {
+          diceResult += Math.floor(Math.random() * diceType) + 1;
+        }
       }
       if (this.damageBonus) {
         return diceResult + this.damageBonus;
@@ -171,8 +323,10 @@ class Monster {
   }
 };
 
-let nextGroupIndex = 0;
+let nextGroupIndex = 11;
 let currentGroup;
+let playerMonster;
+let enemyMonster;
 
 const buildNextGroup = () => {
   if (nextGroupIndex < monsterManual.length) {
@@ -181,9 +335,6 @@ const buildNextGroup = () => {
   }
   nextGroupIndex++;
 };
-
-let playerMonster;
-let enemyMonster;
 
 const buildCarousel = (namesArr, imgArr, data) => {
   const $carousel = $('<div>').addClass('carousel');
@@ -253,7 +404,7 @@ const buildMonsterContainer = (monster) => {
   const $name = $('<p>').html(`<strong>${monster.name}</strong>`);
   const $hp = $('<p>').html(`<strong>HP: </strong>${monster.hp}`);
   const $ac = $('<p>').html(`<strong>AC: </strong>${monster.ac}`);
-  const $initiative = $('<p>').html(`<strong>Initiative: </strong>${modifiers[`${monster.dex}`]}`);
+  const $initiative = $('<p>').html(`<strong>Initiative: </strong>${monster.initStr}`);
   const $attack = $('<p>').html(monster.attackString);
 
   $imgContainer.append($img)
