@@ -294,7 +294,6 @@ footer {
   justify-content: center;
   color: var(--blue);
   font-size: 2vmin;
-  z-index: -1;
 }
 
 footer span {
