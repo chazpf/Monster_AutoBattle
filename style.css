@@ -11,6 +11,9 @@
 }
 
 body {
+  position: relative;
+  width: 100vw;
+  min-height: 100vh;
   background: var(--bgbeige);
   padding: 1vh 1vw;
 }
@@ -28,26 +31,27 @@ header h1 {
   border: 3px solid var(--blue);
   border-radius: 5px;
   padding: 1%;
-  font-size: clamp(38px, 6vmin, 68px);
+  font-size: clamp(30px, 6vmin, 68px);
   color: var(--blue);
-  margin-bottom: 1em;
+  margin-bottom: 2vmin;
   text-decoration: underline;
 }
 
 h3 {
   font-size: clamp(14px, 3vmin, 30px);
   text-decoration: underline;
-  margin-bottom: .25em;
+  margin-bottom: .25vmin;
 }
 
 .rules-description {
+  width: 98%;
   height: fit-content;
-  margin-bottom: 2em;
+  margin-bottom: 2vmin;
   border: 3px solid var(--blue);
   border-radius: 5px;
-  padding: 3%;
+  padding: 3vmin;
   background-color: var(--bgdarker);
-  font-size: 1.25em;
+  font-size: max(1.75vmin, 12px);
   color: var(--blue);
 }
 
@@ -88,12 +92,13 @@ button:active {
 .carousel {
   background-color: var(--bgdarker);
   height: 40vh;
+  min-height: 200px;
   max-width: 937px;
   margin: 0 auto;
   padding: 1%;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
   border: 3px solid var(--blue);
   border-radius: 5px;
@@ -145,7 +150,7 @@ button:active {
   width: 40%;
   display: flex;
   justify-content: space-between;
-  margin-top: 2%;
+  margin-top: 1%;
 }
 
 .battle {
@@ -280,11 +285,26 @@ button:active {
   display: none;
 }
 
-@media (max-width: 600px) {
-  .rules-description {
-    font-size: 1em;
-  }
+footer {
+  width: 98%;
+  padding: 1vh;
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  color: var(--blue);
+  font-size: 2vmin;
+  z-index: -1;
+}
 
+footer span {
+  border: 2px solid var(--blue);
+  border-radius: 5px;
+  background-color: var(--bgdarker);
+  padding: .5%;
+}
+
+@media (max-width: 600px) {
   .carousel {
     height: fit-content;
   }
@@ -304,8 +324,8 @@ button:active {
   }
 
   .monster {
-    padding: 2%;
-    justify-content: flex-start;
+    padding: 35% 2%;
+    justify-content: space-between;
   }
 
   .monster h3 {
