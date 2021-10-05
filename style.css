@@ -2,11 +2,14 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  --lightgreen: #8AF04A;
+  /* --lightgreen: #8AF04A; */
+  --lightgreen: #52bd0f;
   --red: #990011;
-  --blue: #3C50F0;
+  /* --blue: #3C50F0; */
+  --blue: #1027d5;
   --bgbeige: #A37767;
-  --bgdarker: #9f6f60;
+  /* --bgdarker: #9f6f60; */
+  --bgdarker: #8f6356;
 }
 
 body {
@@ -50,21 +53,27 @@ h3 {
 
 button {
   padding: 1%;
+  width: fit-content;
+  height: fit-content;
   border: 2px solid var(--blue);
   border-radius: 5px;
   background-color: var(--bgdarker);
   color: var(--blue);
+  box-sizing: border-box;
+  margin: 1px;
 }
 
 button:hover {
   border: 3px solid var(--blue);
-  font-weight: bold;
+  /* font-weight: bold; */
+  margin: 0;
 }
 
 button:active {
-  border: 1px solid var(--blue);
+  border: 2px solid var(--blue);
   font-weight: normal;
   background-color: var(--bgbeige);
+  margin: 1px;
 }
 
 .carousel {
@@ -128,6 +137,10 @@ button:active {
   display: flex;
   justify-content: space-between;
   margin-top: 2%;
+}
+
+#select {
+
 }
 
 .battle {
@@ -237,7 +250,7 @@ button:active {
 }
 
 .modal-textbox h1 {
-  font-size: min(6vw, 58px);
+  font-size: min(6vmin, 58px);
 }
 
 .modal-win {
@@ -252,7 +265,6 @@ button:active {
 
 .modal-button {
   width: fit-content;
-  margin: 5% auto;
 }
 
 .hide {

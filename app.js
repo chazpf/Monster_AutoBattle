@@ -282,7 +282,7 @@ class Monster {
   rollAttack() {
     return this.rollD20() + this.attackBonus;
   }
-  rollDamage() {
+  rollDamage(crit) {
     if (this.damageDice) {
       let diceResult = 0;
       if (this.damageDice.includes('+')) {
@@ -293,14 +293,28 @@ class Monster {
             diceResult += Math.floor(Math.random() * diceType) + 1;
           }
         }
+        if (crit) {
+          for (const die of diceSplit) {
+            const [diceNumber, diceType] = die.split('d');
+            for (let i=0; i<diceNumber; i++) {
+              diceResult += Math.floor(Math.random() * diceType) + 1;
+            }
+          }
+        }
       } else {
         const [diceNumber, diceType] = this.damageDice.split('d');
         for (let i=0; i<diceNumber; i++) {
           diceResult += Math.floor(Math.random() * diceType) + 1;
         }
+        if (crit) {
+          for (let i=0; i<diceNumber; i++) {
+            diceResult += Math.floor(Math.random() * diceType) + 1;
+          }
+        }
       }
       if (this.damageBonus) {
-        return diceResult + this.damageBonus;
+        const diceFinal = diceResult + this.damageBonus;
+        return diceFinal;
       } else {
         return diceResult;
       }
@@ -311,7 +325,11 @@ class Monster {
   attack(target) {
     const attackRoll = this.rollAttack();
     let message;
-    if (attackRoll >= target.ac) {
+    if (attackRoll - this.attackBonus === 20) {
+      const damage = this.rollDamage('crit');
+      target.currentHp -= damage;
+      message = `${this.name} used ${this.attackName}. Critical Hit for ${damage} damage!!`;
+    } else if (attackRoll >= target.ac) {
       const damage = this.rollDamage();
       target.currentHp -= damage;
       message = `${this.name} used ${this.attackName} and rolled a ${attackRoll}. It hits ${target.name} for ${damage} damage!`;
@@ -340,9 +358,9 @@ const buildCarousel = (namesArr, imgArr, data) => {
 
   const $carouselHeader = $('<div>').addClass('carousel-header').text(`Challenge Rating: ${currentGroup.urlCR}`);
   const $buttonsContainer = $('<div>').attr('id', 'carousel-button-container');
-  const $prevButton = $('<button>').attr('id', 'prev').text('Previous');
+  const $prevButton = $('<button>').attr('id', 'prev').text('<Previous');
   const $selectButton = $('<button>').attr('id', 'select').text('Select');
-  const $nextButton = $('<button>').attr('id', 'next').text('Next');
+  const $nextButton = $('<button>').attr('id', 'next').text('Next>');
 
   $buttonsContainer.append($prevButton).append($selectButton).append($nextButton);
   $carousel.append($carouselHeader).append($buttonsContainer);
