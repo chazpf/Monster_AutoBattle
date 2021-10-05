@@ -3,11 +3,10 @@
   padding: 0;
   box-sizing: border-box;
   --lightgreen: #8AF04A;
-  --darkgreen: #54A322;
   --red: #990011;
   --blue: #3C50F0;
   --bgbeige: #A37767;
-
+  --bgdarker: #9f6f60;
 }
 
 body {
@@ -17,14 +16,31 @@ body {
 
 header h1 {
   text-align: center;
-  font-size: min(6vw, 58px);
+  font-size: clamp(38px, 6vmin, 68px);
   color: var(--blue);
   margin-bottom: 1em;
+  text-decoration: underline;
+}
+
+h3 {
+  font-size: clamp(14px, 3vmin, 30px);
+  text-decoration: underline;
+  margin-bottom: .25em;
 }
 
 .rules-description {
-  height: 20vh;
+  height: fit-content;
   margin-bottom: 2em;
+  border: 3px solid var(--blue);
+  border-radius: 5px;
+  padding: 3%;
+  background-color: var(--bgdarker);
+  font-size: 1.25em;
+  color: var(--blue);
+}
+
+.rules-description p {
+  margin-bottom: .5em;
 }
 
 #start-container {
@@ -32,7 +48,27 @@ header h1 {
   justify-content: center;
 }
 
+button {
+  padding: 1%;
+  border: 2px solid var(--blue);
+  border-radius: 5px;
+  background-color: var(--bgdarker);
+  color: var(--blue);
+}
+
+button:hover {
+  border: 3px solid var(--blue);
+  font-weight: bold;
+}
+
+button:active {
+  border: 1px solid var(--blue);
+  font-weight: normal;
+  background-color: var(--bgbeige);
+}
+
 .carousel {
+  background-color: var(--bgdarker);
   height: 40vh;
   max-width: 937px;
   margin: 0 auto;
@@ -41,17 +77,17 @@ header h1 {
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-  border: 1px solid var(--blue);
+  border: 3px solid var(--blue);
   border-radius: 5px;
 }
 
 .carousel-header {
-  font-size: min(4vw, 38px);
+  font-size: min(1.5em, 28px);
   color: var(--blue);
 }
 
 .carousel-monster-container {
-  height: 80%;
+  height: 60%;
   width: 90%;
   display: flex;
   justify-content: space-between;
@@ -59,7 +95,7 @@ header h1 {
 }
 
 .carousel-img-container {
-  height: 95%;
+  height: 100%;
   width: 60%;
   display: flex;
   justify-content: center;
@@ -68,31 +104,30 @@ header h1 {
 
 .carousel-img {
   height: 100%;
+  border-radius: 5px;
 }
 
 .carousel-monster-stats {
-  height: 95%;
+  height: 100%;
   width: 37%;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
-  border: 1px solid var(--blue);
+  justify-content: center;
+  border: 2px solid var(--blue);
   border-radius: 5px;
-  padding: 0 2%;
-}
-
-.carousel-monster-stats p, .carousel-monster-stats h3 {
+  padding: 2%;
   color: var(--blue);
 }
 
-.carousel-monster-stats h3 {
-  font-size: 1.5em;
+.carousel-monster-stats p {
+    font-size: clamp(12px, 2vmin, 22px);
 }
 
 #carousel-button-container {
   width: 40%;
   display: flex;
   justify-content: space-between;
+  margin-top: 2%;
 }
 
 .battle {
@@ -103,16 +138,25 @@ header h1 {
 }
 
 #player-monster {
-  border: 2px solid var(--lightgreen);
+  border: 3px solid var(--lightgreen);
   color: var(--lightgreen);
 }
 
+#player-monster div.description {
+  border: 2px solid var(--lightgreen);
+}
+
 #enemy-monster {
-  border: 2px solid var(--red);
+  border: 3px solid var(--red);
   color: var(--red);
 }
 
+#enemy-monster div.description {
+  border: 2px solid var(--red);
+}
+
 .monster {
+  background-color: var(--bgdarker);
   height: 90%;
   width: 30%;
   display: flex;
@@ -124,14 +168,17 @@ header h1 {
 }
 
 .img {
-  max-width: 25vw;
-  max-height: 300px;
+  max-width: 95%;
+  max-height: 70%;
   margin-bottom: 2em;
+  border-radius: 5px;
 }
 
 .description {
   width: 98%;
-  height: 48%;
+  height: fit-content;
+  border-radius: 5px;
+  padding: 1%;
 }
 
 #battle-log {
@@ -176,33 +223,36 @@ header h1 {
 }
 
 .modal-textbox {
-  background-color: var(--bgbeige);
+  background-color: var(--bgdarker);
   height: 40vh;
   width: 60vw;
   max-width: 800px;
   margin: 30vh auto;
-  text-align: center;
+  padding: 2%;
   border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .modal-textbox h1 {
   font-size: min(6vw, 58px);
-  margin: 10% 0;
 }
 
 .modal-win {
-  border: 2px solid var(--lightgreen);
+  border: 3px solid var(--lightgreen);
   color: var(--lightgreen);
 }
 
 .modal-lose {
-  border: 2px solid var(--red);
+  border: 3px solid var(--red);
   color: var(--red);
 }
 
 .modal-button {
   width: fit-content;
-  margin: 10% 46%;
+  margin: 5% auto;
 }
 
 .hide {
@@ -210,6 +260,10 @@ header h1 {
 }
 
 @media (max-width: 600px) {
+  .rules-description {
+    font-size: 1em;
+  }
+
   .carousel {
     height: fit-content;
   }
@@ -231,5 +285,9 @@ header h1 {
   .monster {
     padding: 2%;
     justify-content: flex-start;
+  }
+
+  .monster h3 {
+    font-size: 1em;
   }
 }

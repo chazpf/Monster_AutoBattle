@@ -426,7 +426,7 @@ const buildBattle = (monster) => {
   const $playerMonster = $('<div>').addClass('monster').attr('id', 'player-monster');
   const $playerImg = $('<img>').addClass('img').attr('src', `${playerMonster.img}`);
   const $playerDescription = $('<div>').addClass('description');
-  const $playerName = $('<p>').html(`<strong>${playerMonster.name}</strong>`);
+  const $playerName = $('<h3>').html(`<strong>${playerMonster.name}</strong>`);
   const $playerHp = $('<p>').addClass('player-hp').html(`<strong>HP: </strong>${playerMonster.hp}`);
   const $playerAc = $('<p>').html(`<strong>AC: </strong>${playerMonster.ac}`);
   const $playerAttack = $('<p>').html(playerMonster.attackString);
@@ -436,7 +436,7 @@ const buildBattle = (monster) => {
   const $enemyMonster = $('<div>').addClass('monster').attr('id', 'enemy-monster');
   const $enemyImg = $('<img>').addClass('img').attr('src', `${enemyMonster.img}`);
   const $enemyDescription = $('<div>').addClass('description');
-  const $enemyName = $('<p>').html(`<strong>${enemyMonster.name}</strong>`);
+  const $enemyName = $('<h3>').html(`<strong>${enemyMonster.name}</strong>`);
   const $enemyHp = $('<p>').addClass('enemy-hp').html(`<strong>HP: </strong>${enemyMonster.hp}`);
   const $enemyAc = $('<p>').html(`<strong>AC: </strong>${enemyMonster.ac}`);
   const $enemyAttack = $('<p>').html(enemyMonster.attackString);
@@ -545,7 +545,7 @@ const winRound = () => {
       if (currentGroup.monsterData) {
         $('.modal').remove();
         $('.battle').remove();
-        $('<div>').addClass('rules-description').insertAfter($('header'));
+        $('<div>').addClass('rules-description').html(`<p>You must choose your monster and it will battle against a random enemy.</p><p>If you win, you will proceed to choose a new monster of a higher challenge rating. There are <strong>${13 - (nextGroupIndex)}</strong> challenge ratings remaining.<p>Choose wisely - not all monsters are created equal!</p>`).insertAfter($('header'));
         currentGroup.generateCarousel();
       } else {
         console.log('too fast!');
@@ -583,7 +583,7 @@ const restart = () => {
   if (currentGroup.monsterData) {
     $('.modal').remove();
     $('.battle').remove();
-    $('<div>').addClass('rules-description').insertAfter($('header'));
+    $('<div>').addClass('rules-description').html(`<p>You must choose your monster and it will battle against a random enemy.</p><p>If you win, you will proceed to choose a new monster of a higher challenge rating. There are <strong>${13 - (nextGroupIndex)}</strong> challenge ratings remaining.<p>Choose wisely - not all monsters are created equal!</p>`).insertAfter($('header'));
     currentGroup.generateCarousel();
   } else {
     console.log('too fast!');
@@ -594,6 +594,7 @@ $(() => {
   buildNextGroup();
   $('#start-button').on('click', event => {
     if (currentGroup.monsterData) {
+      $('.rules-description').html(`<p>You must choose your monster and it will battle against a random enemy.</p><p>If you win, you will proceed to choose a new monster of a higher challenge rating. There are <strong>${13 - (nextGroupIndex)}</strong> challenge ratings remaining.<p>Choose wisely - not all monsters are created equal!</p>`);
       $('#start-container').remove();
       currentGroup.generateCarousel();
     } else {
