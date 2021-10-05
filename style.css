@@ -2,13 +2,11 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  /* --lightgreen: #8AF04A; */
+  font-family: 'Merriweather', serif;
   --lightgreen: #52bd0f;
   --red: #990011;
-  /* --blue: #3C50F0; */
   --blue: #1027d5;
   --bgbeige: #A37767;
-  /* --bgdarker: #9f6f60; */
   --bgdarker: #8f6356;
 }
 
@@ -17,8 +15,19 @@ body {
   padding: 1vh 1vw;
 }
 
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 header h1 {
-  text-align: center;
+  width: fit-content;
+  line-height: 100%;
+  background-color: var(--bgdarker);
+  border: 3px solid var(--blue);
+  border-radius: 5px;
+  padding: 1%;
   font-size: clamp(38px, 6vmin, 68px);
   color: var(--blue);
   margin-bottom: 1em;
@@ -129,7 +138,7 @@ button:active {
 }
 
 .carousel-monster-stats p {
-    font-size: clamp(12px, 2vmin, 22px);
+  font-size: clamp(12px, 2vmin, 22px);
 }
 
 #carousel-button-container {
@@ -137,10 +146,6 @@ button:active {
   display: flex;
   justify-content: space-between;
   margin-top: 2%;
-}
-
-#select {
-
 }
 
 .battle {
@@ -176,7 +181,7 @@ button:active {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 5%;
+  padding: 2%;
   border-radius: 5px;
 }
 
@@ -192,6 +197,10 @@ button:active {
   height: fit-content;
   border-radius: 5px;
   padding: 1%;
+}
+
+.description p {
+  font-size: clamp(8px, 2vmin, 22px);
 }
 
 #battle-log {
@@ -300,6 +309,6 @@ button:active {
   }
 
   .monster h3 {
-    font-size: 1em;
+    font-size: 10px;
   }
 }
