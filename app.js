@@ -1,3 +1,4 @@
+// monster manual contains the names of every monster I have images for, and their challenge rating formatted for filepath, and for url. It is used to consctruct the api calls and filter the data down to only these monsters:
 const monsterManual = [
   [
     [
@@ -171,6 +172,7 @@ const monsterManual = [
   ],
 ]
 
+// modifiers is a conversion table between the ability score and ability modidifier in d&d. It is used to convert the monster's dexterity score (which is provided by the api data) to an initiative modifier (which is not):
 const modifiers = {
   1: -5,
   2: -4,
@@ -204,6 +206,7 @@ const modifiers = {
   30: 10,
 }
 
+// The MonsterGroup class calls the api upon construction, and uses the information from monsterManual to collect and filter the data of the monsters of one challenge rating. It has a generateCarousel method, which will feed the buildCarousel function the appropriate parameters for this challenge rating. The randomIndex method is used by the buildBattle function to pick a random enemy from within this group. The varous methods are used during combat.
 class MonsterGroup {
   constructor(monstersArr, fileCR, urlCR) {
     this.monsterNames = monstersArr;
@@ -233,6 +236,7 @@ class MonsterGroup {
   }
 };
 
+// The Monster class is used to create the monster objects for the buildMonsterContainer function and the battle itself. Each monster has the appropriate name and image, as well as specific pieces of api data parsed to be useful during combat. The various methods are used to conduct the combat.
 class Monster {
   constructor(img, data) {
     this.index = currentGroup.monsterImgs.indexOf(img);
@@ -340,11 +344,13 @@ class Monster {
   }
 };
 
+// This set are the global variables needed to run the game.
 let nextGroupIndex = 0;
 let currentGroup;
 let playerMonster;
 let enemyMonster;
 
+// The buildNextGroup function uses the nextGroupIndex to consult the monsterManual and construct the correct MonsterGroup that will be needed next.
 const buildNextGroup = () => {
   if (nextGroupIndex < monsterManual.length) {
     const nextGroup = monsterManual[nextGroupIndex]
@@ -353,6 +359,7 @@ const buildNextGroup = () => {
   nextGroupIndex++;
 };
 
+// The buildCarousel function is triggered by the MonsterGroup's generateCarousel method. It builds the carousel using jquery and the parameters.
 const buildCarousel = (namesArr, imgArr, data) => {
   const $carousel = $('<div>').addClass('carousel');
 
@@ -414,6 +421,7 @@ const buildCarousel = (namesArr, imgArr, data) => {
   $('#select').on('click', select);
 };
 
+// The buildMonsterContainer function is used by the buildCarousel function. It exists to try and seperate some of the functionality out of that somewhat bloated function.
 const buildMonsterContainer = (monster) => {
   const $monsterContainer = $('<div>').addClass('carousel-monster-container').addClass('hide');
   const $imgContainer = $('<div>').addClass('carousel-img-container');
@@ -431,6 +439,7 @@ const buildMonsterContainer = (monster) => {
   return $monsterContainer;
 };
 
+// The buildBattle function is triggered by the select button, and receives the player's selected monster as its paramater. It first selects a random enemy monster, then uses jquery to construct the battle DOM layout. Fuinally, it triggers startBattle.
 const buildBattle = (monster) => {
   playerMonster = monster;
 
@@ -470,6 +479,7 @@ const buildBattle = (monster) => {
   startBattle();
 };
 
+// The startBattle function rolls initiative for each monster, and decides who will act first. It then waits two second, and calls the appropriate handleAttack.
 const startBattle = () => {
   const playerInit = playerMonster.rollInitiative();
   updateBattleLog(`${playerMonster.name} rolled ${playerInit} initiative`);
@@ -492,17 +502,21 @@ const startBattle = () => {
   }
 };
 
+// The updateBattleLog function dims previous battle log messages, and adds a new one based on the provided argument text.
 const updateBattleLog = text => {
   $('#battle-log').children().addClass('dim');
   const $text = $('<p>').text(text);
   $('#battle-log').prepend($text);
 };
 
+
+// The updateHP changes the displayed HP for each monster to the monster's current HP.
 const updateHP = () => {
   $('.player-hp').html(`<strong>HP: </strong>${playerMonster.currentHp}`)
   $('.enemy-hp').html(`<strong>HP: </strong>${enemyMonster.currentHp}`)
 };
 
+// The handleAttack function calls the appropriate monster's attack method, waits two seconds, then either recurs for the other side (if the target survived) or calls the winRound or lose functions (if the target did not survive).
 const handleAttack = side => {
   if (side === 'player') {
     updateBattleLog(playerMonster.attack(enemyMonster));
@@ -537,6 +551,7 @@ const handleAttack = side => {
   }
 };
 
+// The winRound function is called by handleAttack when the player wins. It calls buildNextGroup for the next MonsterGroup, and provides the player with a victory message and a "Proceed" button to go to the next carousel. If the final level has been won, it displays a final victory message and the "Reset" button instead.
 const winRound = () => {
   buildNextGroup();
   buildModal();
@@ -575,6 +590,7 @@ const winRound = () => {
   $('.modal').removeClass('hide');
 };
 
+// The lose function is called by handleAttack if the enemy monster wins. It provides the player with a "Restart" button.
 const lose = () => {
   nextGroupIndex = 0;
   buildNextGroup();
@@ -590,6 +606,7 @@ const lose = () => {
   $('.modal').removeClass('hide');
 };
 
+// The buildModal function is used by both winRound and lose functions, to create the basic modal DOM structure. Both functions then modifer this base to their needs.
 const buildModal = () => {
   const $modal = $('<div>').addClass('modal').addClass('hide');
   const $modalTextBox = $('<div>').addClass('modal-textbox');
@@ -597,6 +614,7 @@ const buildModal = () => {
   $('body').append($modal);
 };
 
+// The reset function is used by the Restart button on the lose modal & the final victory modal.
 const restart = () => {
   if (currentGroup.monsterData) {
     $('.modal').remove();
@@ -608,6 +626,7 @@ const restart = () => {
   }
 };
 
+// On page load, the first MonsterGroup is built, and the start button is given the funcitonality to transition to the first carousel.
 $(() => {
   buildNextGroup();
   $('#start-button').on('click', event => {
