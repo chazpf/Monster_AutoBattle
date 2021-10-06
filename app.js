@@ -528,6 +528,9 @@ const updateHP = () => {
 const handleAttack = side => {
   if (side === 'player') {
     const message = playerMonster.attack(enemyMonster);
+    if (enemyMonster.currentHp <= 0){
+      storeLocal();
+    }
     updateBattleLog(message);
     $('#battle-log').children().eq(0).addClass('player-log');
     if (message.includes('hits')) {
@@ -555,6 +558,9 @@ const handleAttack = side => {
     }, 2000);
   } else if (side === 'enemy') {
     const message = enemyMonster.attack(playerMonster);
+    if (playerMonster.currentHp <= 0) {
+      storeLocal();
+    }
     updateBattleLog(message);
     $('#battle-log').children().eq(0).addClass('enemy-log');
     if (message.includes('hits')) {
@@ -585,7 +591,6 @@ const handleAttack = side => {
 
 // The winRound function is called by handleAttack when the player wins. It calls buildNextGroup for the next MonsterGroup, and provides the player with a victory message and a "Proceed" button to go to the next carousel. If the final level has been won, it displays a final victory message and the "Reset" button instead.
 const winRound = () => {
-  storeLocal();
   buildNextGroup();
   buildModal();
   $('.modal-textbox').addClass('modal-win');
@@ -627,7 +632,6 @@ const winRound = () => {
 // The lose function is called by handleAttack if the enemy monster wins. It provides the player with a "Restart" button.
 const lose = () => {
   nextGroupIndex = 0;
-  storeLocal();
   buildNextGroup();
   buildModal();
   $('.modal-textbox').addClass('modal-lose');
@@ -661,9 +665,13 @@ const restart = () => {
   }
 };
 
-// The storeLocal function stores the nextGroupIndex locally, so the player can resume where they left off if they leave the page in the middle of making progress. This is called whenever the player wins or loses a round.
+// The storeLocal function stores the nextGroupIndex locally, so the player can resume where they left off if they leave the page in the middle of making progress. If the players monster has died, this will store 0 so the player must start over.
 const storeLocal = () => {
-  localStorage.setItem('nextGroup', JSON.stringify(nextGroupIndex));
+  if (playerMonster.currentHp <= 0) {
+    localStorage.setItem('nextGroup', JSON.stringify(0));
+  } else {
+    localStorage.setItem('nextGroup', JSON.stringify(nextGroupIndex));
+  }
 }
 
 // On page load, the first MonsterGroup is built, and the start button is given the funcitonality to transition to the first carousel.
