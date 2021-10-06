@@ -661,6 +661,7 @@ const restart = () => {
   }
 };
 
+// The storeLocal function stores the nextGroupIndex locally, so the player can resume where they left off if they leave the page in the middle of making progress. This is called whenever the player wins or loses a round.
 const storeLocal = () => {
   localStorage.setItem('nextGroup', JSON.stringify(nextGroupIndex));
 }
