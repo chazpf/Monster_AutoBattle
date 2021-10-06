@@ -36,11 +36,11 @@ JS is the bulk of the application. It implements the classes, objects, and data 
 
 #### JQuery
 
-JQuery creates (and destroys) nearly every visible element of the application, besides the header, footer, introduciton, and Start Game button. Here are some of the many JQuery methods involved along the way:
+JQuery creates (and destroys) nearly every visible element of the application, besides the header, footer, introduction, and Start Game button. Here are some of the many JQuery methods involved along the way:
 - .append() & .remove()
 - .insertBefore() & .insertAfter()
 - .addClass() & .attr()
-- .css
+- .css()
 
 Notably, the Ajax call made to Open5e's public API is implemented with JQuery. This retrieves the data used to construct the monsters.
 
@@ -54,7 +54,7 @@ With the data now properly organized, the basic loop of the game can be understo
 1. The next monster group is constructed (starting with the lowest challenge rating) and assigned as the `currentGroup`.
 2. The currentGroup is used to construct the carousel of monster choices.
 3. The player selects a monster to enter into battle.
-4. A different monster from the currentGroup is chosen to be the enemy, the carousel is removed and the battle screen is built.
+4. A different monster from the currentGroup is randomly chosen to be the enemy, the carousel is removed and the battle screen is built.
 5. The battle commences.
     1. First, the `startBattle` function is used to decide which monster goes first (based on an [initiative roll](https://www.dandwiki.com/wiki/5e_SRD:Initiative "Explanation of initiative on D&D wiki")).
     2. The `handleAttack` function is called and the appropriate monster attacks, potentially damaging its opponent (based on the attacker's primary [attack](https://www.dandwiki.com/wiki/5e_SRD:Making_an_Attack "Explanation of making an attack on D&D Wiki") and the defender's [armor class](https://www.dandwiki.com/wiki/SRD:Armor_Class "Explanation of armor class on D&D wiki")).
@@ -67,6 +67,6 @@ With the data now properly organized, the basic loop of the game can be understo
 
 Some features I would like to implement in the future:
 - Multiattack: many monsters in D&D are severely weaker than they should be without factoring in the multiattack option.
-- Special abilities: similarly, many monsters are not brutish melee combatants, and as it stands the game has no way to use special abilities such as spellcasting. This would a major but extrememly desirable undertaking.
+- Special abilities: similarly, many monsters are not brutish melee combatants, and as it stands the game has no way to use special abilities such as spellcasting. This would be a major but extrememly desirable undertaking.
 - Currently, local storage only saves the player's current progress, reseting upon a loss. I would like to save the player's all time furthest progress, and allow the player to start a new game from any challenge rating they've already beaten at least once.
-- Another use of local storage would be to keep track of individual wins and loses per monster, and assemble a "Statistics" screen detailing how every monster has performed in a given player's history. Other statistics might include win/loss percent for the player, or average length of game (how many rounds completed before loss).
+- Another use of local storage would be to keep track of individual wins and loses per monster, and assemble a "Statistics" screen detailing how every monster has performed in a given player's history. Other statistics might include win/loss percent for the player, or average length of game (how many rounds completed before loss, on average).
