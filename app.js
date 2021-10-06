@@ -665,7 +665,7 @@ const restart = () => {
   }
 };
 
-// The storeLocal function stores the nextGroupIndex locally, so the player can resume where they left off if they leave the page in the middle of making progress. If the players monster has died, this will store 0 so the player must start over.
+// The storeLocal function stores the nextGroupIndex locally, so the player can resume where they left off if they leave the page in the middle of making progress. If the players monster has died, this will store 0 so the player must start over. This is called each time any monster dies, and also upon final victory.
 const storeLocal = () => {
   if (playerMonster.currentHp <= 0) {
     localStorage.setItem('nextGroup', JSON.stringify(0));
