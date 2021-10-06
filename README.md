@@ -16,7 +16,7 @@ An autobattling game where you can select a monster from D&D and witness it batt
 
 #### HTML
 
-HTML creates the **landing page**, which includes:
+HTML creates the landing page, which includes:
 - a brief introduction
 - a "Start Game" button
 - a footer linking to my personal GitHub page
