@@ -585,6 +585,7 @@ const handleAttack = side => {
 
 // The winRound function is called by handleAttack when the player wins. It calls buildNextGroup for the next MonsterGroup, and provides the player with a victory message and a "Proceed" button to go to the next carousel. If the final level has been won, it displays a final victory message and the "Reset" button instead.
 const winRound = () => {
+  storeLocal();
   buildNextGroup();
   buildModal();
   $('.modal-textbox').addClass('modal-win');
@@ -595,6 +596,7 @@ const winRound = () => {
 
   if (nextGroupIndex > monsterManual.length) {
     nextGroupIndex = 0
+    storeLocal();
     buildNextGroup();
     $message.text(`The enemy ${enemyMonster.name} was vanquished.`);
     const $finalMessage = $('<p>').text(`You have defeated every challenge. Bask in your victory, you earned it!`);
@@ -625,6 +627,7 @@ const winRound = () => {
 // The lose function is called by handleAttack if the enemy monster wins. It provides the player with a "Restart" button.
 const lose = () => {
   nextGroupIndex = 0;
+  storeLocal();
   buildNextGroup();
   buildModal();
   $('.modal-textbox').addClass('modal-lose');
@@ -658,8 +661,15 @@ const restart = () => {
   }
 };
 
+const storeLocal = () => {
+  localStorage.setItem('nextGroup', JSON.stringify(nextGroupIndex));
+}
+
 // On page load, the first MonsterGroup is built, and the start button is given the funcitonality to transition to the first carousel.
 $(() => {
+  if (localStorage.getItem('nextGroup') !== null) {
+    nextGroupIndex = localStorage.getItem('nextGroup');
+  }
   buildNextGroup();
   $('#start-button').on('click', event => {
     if (currentGroup.monsterData) {
