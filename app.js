@@ -527,23 +527,47 @@ const updateHP = () => {
 // The handleAttack function calls the appropriate monster's attack method, waits two seconds, then either recurs for the other side (if the target survived) or calls the winRound or lose functions (if the target did not survive).
 const handleAttack = side => {
   if (side === 'player') {
-    updateBattleLog(playerMonster.attack(enemyMonster));
-    $('#battle-log').children().eq(0).addClass('player-log')
+    const message = playerMonster.attack(enemyMonster);
+    updateBattleLog(message);
+    $('#battle-log').children().eq(0).addClass('player-log');
+    if (message.includes('hits')) {
+      $('#enemy-monster').children().eq(0).css('animation', 'jiggle .5s');
+      setTimeout(() => {
+        $('#enemy-monster').children().eq(0).css('animation', 'none');
+      }, 500);
+    } else if (message.includes('Critical')) {
+      $('#enemy-monster').children().eq(0).css('animation', 'crit-jiggle .5s');
+      setTimeout(() => {
+        $('#enemy-monster').children().eq(0).css('animation', 'none');
+      }, 500);
+    }
     updateHP();
     setTimeout(() => {
       if (enemyMonster.currentHp > 0) {
         handleAttack('enemy');
       } else {
         updateBattleLog(`${playerMonster.name} wins!`);
-        $('#battle-log').children().eq(0).addClass('player-log')
+        $('#battle-log').children().eq(0).addClass('player-log');
         setTimeout(() => {
           winRound();
         }, 2000);
       }
     }, 2000);
   } else if (side === 'enemy') {
-    updateBattleLog(enemyMonster.attack(playerMonster));
-    $('#battle-log').children().eq(0).addClass('enemy-log')
+    const message = enemyMonster.attack(playerMonster);
+    updateBattleLog(message);
+    $('#battle-log').children().eq(0).addClass('enemy-log');
+    if (message.includes('hits')) {
+      $('#player-monster').children().eq(0).css('animation', 'jiggle .5s');
+      setTimeout(() => {
+        $('#player-monster').children().eq(0).css('animation', 'none');
+      }, 500);
+    } else if (message.includes('Critical')) {
+      $('#player-monster').children().eq(0).css('animation', 'crit-jiggle .5s');
+      setTimeout(() => {
+        $('#player-monster').children().eq(0).css('animation', 'none');
+      }, 500);
+    }
     updateHP();
     setTimeout(() => {
       if (playerMonster.currentHp > 0) {

@@ -59,7 +59,7 @@ h3 {
   animation: visible 1s;
 }
 
-.rules-description p {
+.introduction p, .rules-description p {
   margin-bottom: .5em;
 }
 
@@ -108,15 +108,6 @@ button:active {
   border-radius: 5px;
 
   animation: visible 1s;
-}
-
-@keyframes visible {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
 }
 
 .carousel-header {
@@ -358,6 +349,51 @@ footer span {
   border-radius: 5px;
   background-color: var(--bgdarker);
   padding: .5%;
+}
+
+@keyframes visible {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes jiggle {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes crit-jiggle {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(90deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  75% {
+    transform: rotate(270deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 600px) {
