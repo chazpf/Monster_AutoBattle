@@ -208,6 +208,35 @@ button:active {
   font-size: clamp(8px, 2vmin, 22px);
 }
 
+.healthbar {
+  width: 90%;
+  height: 3vh;
+  border-radius: 5px;
+}
+
+#player-healthbar {
+  border: 1px solid var(--lightgreen);
+}
+
+#enemy-healthbar {
+  border: 1px solid var(--red);
+}
+
+.healthbar-fill {
+  height: 100%;
+  width: 100%;
+
+  transition: width 1.5s;
+}
+
+#player-healthbar-fill {
+  background-color: var(--lightgreen);
+}
+
+#enemy-healthbar-fill {
+  background-color: var(--red);
+}
+
 #battle-log {
   height: fit-content;
   max-height: 90%;

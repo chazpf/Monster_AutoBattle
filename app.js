@@ -351,7 +351,6 @@ let playerMonster;
 let enemyMonster;
 
 // This is the instructional message presented above the carousel at the game start and each time the player return to the selection screen.
-
 const instructionMessage = `<p>You must choose your monster and it will battle against a random enemy.</p><p>If you win, you will proceed to choose a new monster of a higher challenge rating. There are <strong>${13 - (nextGroupIndex)}</strong> challenge ratings remaining.<p>Choose wisely - not all monsters are created equal!</p>`
 
 // The buildNextGroup function uses the nextGroupIndex to consult the monsterManual and construct the correct MonsterGroup that will be needed next.
@@ -458,6 +457,8 @@ const buildBattle = (monster) => {
   const $playerImg = $('<img>').addClass('img').attr('src', `${playerMonster.img}`);
   const $playerDescription = $('<div>').addClass('description');
   const $playerName = $('<h3>').html(`<strong>${playerMonster.name}</strong>`);
+  const $playerHealthbar = $('<div>').addClass('healthbar').attr('id', 'player-healthbar');
+  const $playerHealthbarFill = $('<div>').addClass('healthbar-fill').attr('id', 'player-healthbar-fill');
   const $playerHp = $('<p>').addClass('player-hp').html(`<strong>HP: </strong>${playerMonster.hp}`);
   const $playerAc = $('<p>').html(`<strong>AC: </strong>${playerMonster.ac}`);
   const $playerAttack = $('<p>').html(playerMonster.attackString);
@@ -468,12 +469,16 @@ const buildBattle = (monster) => {
   const $enemyImg = $('<img>').addClass('img').attr('src', `${enemyMonster.img}`);
   const $enemyDescription = $('<div>').addClass('description');
   const $enemyName = $('<h3>').html(`<strong>${enemyMonster.name}</strong>`);
+  const $enemyHealthbar = $('<div>').addClass('healthbar').attr('id', 'enemy-healthbar');
+  const $enemyHealthbarFill = $('<div>').addClass('healthbar-fill').attr('id', 'enemy-healthbar-fill');
   const $enemyHp = $('<p>').addClass('enemy-hp').html(`<strong>HP: </strong>${enemyMonster.hp}`);
   const $enemyAc = $('<p>').html(`<strong>AC: </strong>${enemyMonster.ac}`);
   const $enemyAttack = $('<p>').html(enemyMonster.attackString);
 
-  $playerDescription.append($playerName).append($playerHp).append($playerAc).append($playerAttack);
-  $enemyDescription.append($enemyName).append($enemyHp).append($enemyAc).append($enemyAttack);
+  $playerHealthbar.append($playerHealthbarFill);
+  $playerDescription.append($playerName).append($playerHealthbar).append($playerHp).append($playerAc).append($playerAttack);
+  $enemyHealthbar.append($enemyHealthbarFill);
+  $enemyDescription.append($enemyName).append($enemyHealthbar).append($enemyHp).append($enemyAc).append($enemyAttack);
   $playerMonster.append($playerImg).append($playerDescription);
   $enemyMonster.append($enemyImg).append($enemyDescription);
   $battle.append($playerMonster).append($battleLog).append($enemyMonster);
@@ -516,8 +521,10 @@ const updateBattleLog = text => {
 
 // The updateHP changes the displayed HP for each monster to the monster's current HP.
 const updateHP = () => {
-  $('.player-hp').html(`<strong>HP: </strong>${playerMonster.currentHp}`)
-  $('.enemy-hp').html(`<strong>HP: </strong>${enemyMonster.currentHp}`)
+  $('.player-hp').html(`<strong>HP: </strong>${playerMonster.currentHp}`);
+  $('#player-healthbar-fill').css('width', `${(playerMonster.currentHp/playerMonster.hp)*100}%`);
+  $('.enemy-hp').html(`<strong>HP: </strong>${enemyMonster.currentHp}`);
+  $('#enemy-healthbar-fill').css('width', `${(enemyMonster.currentHp/enemyMonster.hp)*100}%`);
 };
 
 // The handleAttack function calls the appropriate monster's attack method, waits two seconds, then either recurs for the other side (if the target survived) or calls the winRound or lose functions (if the target did not survive).
