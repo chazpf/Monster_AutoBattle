@@ -128,6 +128,7 @@ button:active {
 .carousel-img {
   height: 100%;
   border-radius: 5px;
+  border: 2px solid var(--blue);
 }
 
 .carousel-monster-stats {
@@ -165,6 +166,10 @@ button:active {
   color: var(--lightgreen);
 }
 
+#player-monster img {
+  border: 2px solid var(--lightgreen);
+}
+
 #player-monster div.description {
   border: 2px solid var(--lightgreen);
 }
@@ -172,6 +177,10 @@ button:active {
 #enemy-monster {
   border: 3px solid var(--red);
   color: var(--red);
+}
+
+#enemy-monster img {
+  border: 2px solid var(--red);
 }
 
 #enemy-monster div.description {
@@ -354,6 +363,10 @@ footer span {
   .monster {
     padding: 35% 2%;
     justify-content: space-between;
+  }
+
+  .healthbar {
+    height: 1.5vh;
   }
 
   .monster h3 {
