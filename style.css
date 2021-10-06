@@ -16,6 +16,7 @@ body {
   min-height: 100vh;
   background: var(--bgbeige);
   padding: 1vh 1vw;
+  overflow-x: hidden;
 }
 
 header {
@@ -45,8 +46,9 @@ h3 {
 
 .introduction, .rules-description {
   width: 98%;
+  max-width: 871px;
   height: fit-content;
-  margin-bottom: 2vmin;
+  margin: 0 auto 2vmin auto;
   border: 3px solid var(--blue);
   border-radius: 5px;
   padding: 3vmin;
@@ -98,7 +100,7 @@ button:active {
   height: 40vh;
   min-height: 200px;
   max-width: 937px;
-  margin: 0 auto;
+  margin: 0 auto 8vmin auto;
   padding: 1%;
   display: flex;
   flex-direction: column;
@@ -165,6 +167,7 @@ button:active {
   display: flex;
   justify-content: space-evenly;
   padding-top: 4vh;
+  margin: 0 auto 7vmin auto;
 
   animation: visible 1s;
 }
