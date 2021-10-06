@@ -371,7 +371,7 @@ const buildCarousel = (namesArr, imgArr, data) => {
 
   $buttonsContainer.append($prevButton).append($selectButton).append($nextButton);
   $carousel.append($carouselHeader).append($buttonsContainer);
-  $('body').append($carousel);
+  $carousel.insertBefore('footer');
 
   for (const monsterName of namesArr) {
     const index = namesArr.indexOf(monsterName);
@@ -639,7 +639,9 @@ $(() => {
   buildNextGroup();
   $('#start-button').on('click', event => {
     if (currentGroup.monsterData) {
-      $('.rules-description').html(`<p>You must choose your monster and it will battle against a random enemy.</p><p>If you win, you will proceed to choose a new monster of a higher challenge rating. There are <strong>${13 - nextGroupIndex}</strong> challenge ratings remaining.<p>Choose wisely - not all monsters are created equal!</p>`);
+      $('.introduction').remove();
+      const $rulesDescription = $('<div>').addClass('rules-description').html(`<p>You must choose your monster and it will battle against a random enemy.</p><p>If you win, you will proceed to choose a new monster of a higher challenge rating. There are <strong>${13 - nextGroupIndex}</strong> challenge ratings remaining.<p>Choose wisely - not all monsters are created equal!</p>`);
+      $rulesDescription.insertAfter('header');
       $('#start-container').remove();
       currentGroup.generateCarousel();
     } else {

@@ -43,7 +43,7 @@ h3 {
   margin-bottom: .25vmin;
 }
 
-.rules-description {
+.introduction, .rules-description {
   width: 98%;
   height: fit-content;
   margin-bottom: 2vmin;
@@ -53,6 +53,10 @@ h3 {
   background-color: var(--bgdarker);
   font-size: max(1.75vmin, 12px);
   color: var(--blue);
+}
+
+.rules-description {
+  animation: visible 1s;
 }
 
 .rules-description p {
@@ -102,6 +106,17 @@ button:active {
   align-items: center;
   border: 3px solid var(--blue);
   border-radius: 5px;
+
+  animation: visible 1s;
+}
+
+@keyframes visible {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .carousel-header {
@@ -159,6 +174,8 @@ button:active {
   display: flex;
   justify-content: space-evenly;
   padding-top: 4vh;
+
+  animation: visible 1s;
 }
 
 #player-monster {
@@ -285,6 +302,8 @@ button:active {
   width: 100%;
   z-index: 1;
   overflow: auto;
+
+  animation: visible 1s;
 }
 
 .modal-textbox {
