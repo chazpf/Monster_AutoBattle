@@ -350,9 +350,6 @@ let currentGroup;
 let playerMonster;
 let enemyMonster;
 
-// This is the instructional message presented above the carousel at the game start and each time the player return to the selection screen.
-const instructionMessage = `<p>You must choose your monster and it will battle against a random enemy.</p><p>If you win, you will proceed to choose a new monster of a higher challenge rating. There are <strong>${13 - (nextGroupIndex)}</strong> challenge ratings remaining.<p>Choose wisely - not all monsters are created equal!</p>`
-
 // The buildNextGroup function uses the nextGroupIndex to consult the monsterManual and construct the correct MonsterGroup that will be needed next.
 const buildNextGroup = () => {
   if (nextGroupIndex < monsterManual.length) {
@@ -589,7 +586,7 @@ const winRound = () => {
       if (currentGroup.monsterData) {
         $('.modal').remove();
         $('.battle').remove();
-        $('<div>').addClass('rules-description').html(instructionMessage).insertAfter($('header'));
+        $('<div>').addClass('rules-description').html(`<p>You must choose your monster and it will battle against a random enemy.</p><p>If you win, you will proceed to choose a new monster of a higher challenge rating. There are <strong>${13 - nextGroupIndex}</strong> challenge ratings remaining.<p>Choose wisely - not all monsters are created equal!</p>`).insertAfter($('header'));
         currentGroup.generateCarousel();
       } else {
         console.log('too fast!');
@@ -630,7 +627,7 @@ const restart = () => {
   if (currentGroup.monsterData) {
     $('.modal').remove();
     $('.battle').remove();
-    $('<div>').addClass('rules-description').html(instructionMessage).insertAfter($('header'));
+    $('<div>').addClass('rules-description').html(`<p>You must choose your monster and it will battle against a random enemy.</p><p>If you win, you will proceed to choose a new monster of a higher challenge rating. There are <strong>${13 - nextGroupIndex}</strong> challenge ratings remaining.<p>Choose wisely - not all monsters are created equal!</p>`).insertAfter($('header'));
     currentGroup.generateCarousel();
   } else {
     console.log('too fast!');
@@ -642,7 +639,7 @@ $(() => {
   buildNextGroup();
   $('#start-button').on('click', event => {
     if (currentGroup.monsterData) {
-      $('.rules-description').html(instructionMessage);
+      $('.rules-description').html(`<p>You must choose your monster and it will battle against a random enemy.</p><p>If you win, you will proceed to choose a new monster of a higher challenge rating. There are <strong>${13 - nextGroupIndex}</strong> challenge ratings remaining.<p>Choose wisely - not all monsters are created equal!</p>`);
       $('#start-container').remove();
       currentGroup.generateCarousel();
     } else {
