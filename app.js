@@ -669,7 +669,13 @@ const storeLocal = () => {
 // On page load, the first MonsterGroup is built, and the start button is given the funcitonality to transition to the first carousel.
 $(() => {
   if (localStorage.getItem('nextGroup') !== null) {
-    nextGroupIndex = localStorage.getItem('nextGroup');
+    nextGroupIndex = parseInt(localStorage.getItem('nextGroup'));
+    if (localStorage.getItem('nextGroup') !== '0') {
+      const $resumeMessage = $('<p>').text(`It looks like you were in the middle of a game last time you left. You'll start this game where you left off.`);
+      $('.introduction').children().eq(3).remove();
+      $('.introduction').append($resumeMessage);
+      $('#start-button').text('Resume Game');
+    }
   }
   buildNextGroup();
   $('#start-button').on('click', event => {
