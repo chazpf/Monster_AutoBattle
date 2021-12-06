@@ -7,7 +7,7 @@
 
 An autobattling game where you can select a monster from D&D and witness it battling a monster of similar challenge rating. [Open5e](https://open5e.com/ "Open5e API")'s public API is used to retrieve monster data from Wizards of the Coast's Dungeons & Dragons 5th Edition SRD.
 
-[Link to the live site.](https://gifted-perlman-c3dc22.netlify.app/ "Monster AutoBattle live site hosted on Netlify")
+[Link to the live site.](https://monster-autobattle.netlify.app/ "Monster AutoBattle live site hosted on Netlify")
 
 
 ***
